@@ -27,11 +27,6 @@
 #define LED6 BIT5
 #define LED7 BIT6
 #define LED8 BIT7
-//ptototypes
-void LEDInit(void);
-void LEDOn(unsigned char);
-void LEDOff(unsigned char);
-void LEDToggle(unsigned char);
 
 
 //array of led pins
@@ -91,11 +86,17 @@ void main(void)
   LEDInit();
   while(1)
   {
-      //run through LEDs
-      for(i=0; i<=8; i++)
-      {
-          LEDToggle(i);
-          __delay_cycles(100000);
-      }
+
+      LEDOn(1);
+      LEDOn(4);
+      LEDOn(7);
+      LEDOn(8);
+
+      LEDToggle(2);
+      LEDToggle(3);
+      LEDToggle(5);
+      LEDToggle(6);
+
+      __delay_cycles(100000);
   }
 }
