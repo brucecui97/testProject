@@ -105,7 +105,7 @@ void __attribute__ ((interrupt(TIMER0_B0_VECTOR))) Timer_B (void)
 #error Compiler not supported!
 #endif
 {
-    LEDToggle(2);
+  LEDToggle(5);
   P1OUT ^= BIT0;
-  TB0CCR0 += 50000;                         // Add Offset to TACCR0
+  //TB0CCR0 += 50000;                         // Add Offset to TACCR0
 }
