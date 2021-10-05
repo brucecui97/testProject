@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Tue Oct  5 15:12:58 2021
+>> Linked Tue Oct  5 15:41:27 2021
 
 OUTPUT FILE NAME:   <testProject.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000c650
@@ -17,7 +17,7 @@ MEMORY CONFIGURATION
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
   RAM                   00001c00   00000400  000000a8  00000358  RWIX
-  FRAM                  0000c200   00003d80  000004b0  000038d0  RWIX
+  FRAM                  0000c200   00003d80  000004ae  000038d2  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -112,7 +112,7 @@ section   page    origin      length       input sections
 
 .const     0    0000c21e    00000000     UNINITIALIZED
 
-.text      0    0000c400    000002b0     
+.text      0    0000c400    000002ae     
                   0000c400    000000ee     rts430x_lc_sd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
                   0000c4ee    0000006a                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
                   0000c558    00000040                            : cpy_util.asm.obj (.text:__memcpy_far)
@@ -122,11 +122,11 @@ section   page    origin      length       input sections
                   0000c62e    00000022     MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib : mpu_init_fr57xx.obj (.text:__mpu_init)
                   0000c650    00000020     rts430x_lc_sd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs_mpu)
                   0000c670    0000001a     blink.obj (.text:LEDInit)
-                  0000c68a    00000012     blink.obj (.text:_isr:Timer_B)
-                  0000c69c    00000008     rts430x_lc_sd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000c6a4    00000006                            : exit.c.obj (.text:abort)
-                  0000c6aa    00000004                            : pre_init.c.obj (.text:_system_pre_init)
-                  0000c6ae    00000002                            : startup.c.obj (.text:_system_post_cinit)
+                  0000c68a    00000010     blink.obj (.text:_isr:Timer_B)
+                  0000c69a    00000008     rts430x_lc_sd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  0000c6a2    00000006                            : exit.c.obj (.text:abort)
+                  0000c6a8    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  0000c6ac    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
 .data      0    00001c00    00000008     UNINITIALIZED
                   00001c00    00000008     blink.obj (.data:leds)
@@ -234,9 +234,9 @@ MODULE SUMMARY
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
     .\
-       blink.obj                    134    2         8      
+       blink.obj                    132    2         8      
     +--+----------------------------+------+---------+---------+
-       Total:                       134    2         8      
+       Total:                       132    2         8      
                                                             
     D:\ccs\ccs_base\msp430\lib\FR57xx\MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib
        mpu_init_fr57xx.obj          34     0         0      
@@ -282,7 +282,7 @@ MODULE SUMMARY
        Stack:                       0      0         160    
        Linker Generated:            0      29        0      
     +--+----------------------------+------+---------+---------+
-       Grand Total:                 688    79        168    
+       Grand Total:                 686    79        168    
 
 
 LINKER GENERATED COPY TABLES
@@ -334,7 +334,7 @@ address   name
 00000712  ADC10MEM0_L                            
 000004be  BCD2BIN                                
 000004bc  BIN2BCD                                
-0000c6a4  C$$EXIT                                
+0000c6a2  C$$EXIT                                
 000008c0  CDCTL0                                 
 000008c1  CDCTL0_H                               
 000008c0  CDCTL0_L                               
@@ -850,7 +850,7 @@ address   name
 0000c21e  __TI_CINIT_Limit                       
 0000c20e  __TI_Handler_Table_Base                
 0000c216  __TI_Handler_Table_Limit               
-0000c69c  __TI_ISR_TRAP                          
+0000c69a  __TI_ISR_TRAP                          
 0000c4ee  __TI_auto_init_nobinit_nopinit_hold_wdt
 0000c400  __TI_decompress_lzss                   
 0000c598  __TI_decompress_none                   
@@ -889,9 +889,9 @@ ffffffff  __c_args__
 0000c650  _c_int00_noargs_mpu                    
 0000fffe  _reset_vector                          
 00001f60  _stack                                 
-0000c6ae  _system_post_cinit                     
-0000c6aa  _system_pre_init                       
-0000c6a4  abort                                  
+0000c6ac  _system_post_cinit                     
+0000c6a8  _system_pre_init                       
+0000c6a2  abort                                  
 0000c200  fram_ro_start                          
 0000c200  fram_rw_start                          
 0000c400  fram_rx_start                          
@@ -1468,11 +1468,11 @@ address   name
 0000c650  _c_int00_noargs_mpu                    
 0000c670  LEDInit                                
 0000c68a  Timer_B                                
-0000c69c  __TI_ISR_TRAP                          
-0000c6a4  C$$EXIT                                
-0000c6a4  abort                                  
-0000c6aa  _system_pre_init                       
-0000c6ae  _system_post_cinit                     
+0000c69a  __TI_ISR_TRAP                          
+0000c6a2  C$$EXIT                                
+0000c6a2  abort                                  
+0000c6a8  _system_pre_init                       
+0000c6ac  _system_post_cinit                     
 0000ffce  __TI_int31                             
 0000ffd0  __TI_int32                             
 0000ffd2  __TI_int33                             
