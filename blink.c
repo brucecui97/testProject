@@ -84,19 +84,28 @@ void main(void)
   // Stop WDT
   WDTCTL = WDTPW + WDTHOLD;
   LEDInit();
-  while(1)
-  {
 
-      LEDOn(1);
-      LEDOn(4);
-      LEDOn(7);
-      LEDOn(8);
+  P1DIR |= BIT0;
+  P1OUT |= BIT0;
 
-      LEDToggle(2);
-      LEDToggle(3);
-      LEDToggle(5);
-      LEDToggle(6);
+  TB0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
+  TB0CCR0 = 50000;
+  TB0CTL = TBSSEL_2 + MC_2;                 // SMCLK, continuous mode
 
-      __delay_cycles(100000);
-  }
+  __bis_SR_register(LPM0_bits + GIE);       // Enter LPM0 w/ interrupt
+}
+
+// Timer B0 interrupt service routine
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector = TIMER0_B0_VECTOR
+__interrupt void Timer_B (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(TIMER0_B0_VECTOR))) Timer_B (void)
+#else
+#error Compiler not supported!
+#endif
+{
+    LEDToggle(2);
+  P1OUT ^= BIT0;
+  TB0CCR0 += 50000;                         // Add Offset to TACCR0
 }
