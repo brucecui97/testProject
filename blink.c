@@ -95,14 +95,8 @@ void main(void)
 }
 
 // Timer B0 interrupt service routine
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector = TIMER0_B0_VECTOR
 __interrupt void Timer_B (void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(TIMER0_B0_VECTOR))) Timer_B (void)
-#else
-#error Compiler not supported!
-#endif
 {
   LEDToggle(2);
   P1OUT ^= BIT0;
