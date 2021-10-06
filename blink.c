@@ -87,7 +87,7 @@ void main(void)
   P1DIR |= BIT0;
   P1OUT |= BIT0;
 
-  TB0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
+  TB0CCTL1 = CCIE;                          // TACCR0 interrupt enabled
   TB0CCR0 = 996;
   TB0CTL = TBSSEL_2 + MC_1;                 // SMCLK, UP mode
 
@@ -95,7 +95,7 @@ void main(void)
 }
 
 // Timer B0 interrupt service routine
-#pragma vector = TIMER0_B0_VECTOR
+#pragma vector = TIMER0_B1_VECTOR
 __interrupt void Timer_B (void)
 {
   LEDToggle(2);
