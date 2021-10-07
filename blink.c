@@ -106,17 +106,17 @@ void main(void)
     //setup Timer A
     LEDInit();
 
-    TB0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
-      TB0CCR0 = 996;
-      TB0CTL = TBSSEL_2 + MC_1;                 // SMCLK, UP mode            // SMCLK, UP mode
+    TA0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
+      TA0CCR0 = 996;
+      TA0CTL = TASSEL_2 + MC_1;                 // SMCLK, UP mode            // SMCLK, UP mode
 
     __enable_interrupt();
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
   }
 
-#pragma vector = TIMER0_B0_VECTOR
-__interrupt void Timer_B (void)
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer_A (void)
 {
   LEDToggle(2);
   P1OUT ^= BIT0;
