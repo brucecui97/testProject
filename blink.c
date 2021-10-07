@@ -86,8 +86,9 @@ void main(void)
     CSCTL2 = SELA_3 + SELS_3 + SELM_3;        // set ACLK = SMCLK = DCO/8
     CSCTL3 = DIVA_3 + DIVS_3 + DIVM_3;        // set all dividers
 
-    P1DIR |= BIT6 + BIT7;                       // P1.4 and P1.5 output
-    P1SEL0 |= BIT6 + BIT7;                      // P1.4 and P1.5 options select
+    P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
+    P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
+
 
 
     int pwmPeriod = 1992;
@@ -97,7 +98,7 @@ void main(void)
     TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
 
     TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
-    TB1CCR2 = pwmPeriod*3/4.0;                            // CCR1 PWM duty cycle
+    TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
 
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
