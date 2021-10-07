@@ -105,22 +105,19 @@ void main(void)
 
     //setup Timer A
     LEDInit();
-    TA0CTL |=TACLR;
-    TA0CTL |=MC__CONTINUOUS;
-    TA0CTL |= TBSSEL__SMCLK;
 
-    //setup Capture
-    TA0CCTL0 |=CAP; //put CCR0 into capture mode
-    TA0CCTL0 |= CM_3;//both edges
-    TA0CCTL0 |=CCIS_0;
+    TB0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
+      TB0CCR0 = 996;
+      TB0CTL = TBSSEL_2 + MC_1;                 // SMCLK, UP mode            // SMCLK, UP mode
 
-    int WhatICaptured = 0;
+    __enable_interrupt();
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
   }
 
-#pragma vector = TIMER0_A0_VECTOR
-__interrupt void myISR(void){
-    LEDOn(1);
-
+#pragma vector = TIMER0_B0_VECTOR
+__interrupt void Timer_B (void)
+{
+  LEDToggle(2);
+  P1OUT ^= BIT0;
 }
