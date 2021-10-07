@@ -107,8 +107,7 @@ void main(void)
     LEDInit();
 
     TA0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
-      TA0CCR0 = 996;
-      TA0CTL = TASSEL_2 + MC_1;                 // SMCLK, UP mode            // SMCLK, UP mode
+      TA0CTL = TASSEL_2 + MC_2;                 // SMCLK, UP mode            // SMCLK, UP mode
 
     __enable_interrupt();
     __bis_SR_register(LPM0_bits);             // Enter LPM0
