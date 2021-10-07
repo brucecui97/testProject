@@ -80,32 +80,22 @@ void LEDToggle(unsigned char LEDn)
 
 void main(void)
 {
-  unsigned char i;
-  // Stop WDT
-  WDTCTL = WDTPW + WDTHOLD;
-  LEDInit();
-  P1DIR |= BIT0;
-  P1OUT |= BIT0;
+    WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+    CSCTL0_H = 0xA5;
+    CSCTL1 |= DCOFSEL0 + DCOFSEL1;             // Set max. DCO setting =8MHz
+    CSCTL2 = SELA_3 + SELS_3 + SELM_3;        // set ACLK = SMCLK = DCO/8
+    CSCTL3 = DIVA_3 + DIVS_3 + DIVM_3;        // set all dividers
 
-  TB1CTL |=TBCLR;
-  TB1CTL |=TBSSEL__SMCLK;
-  TB1CTL |=MC__UP;
+    P1DIR |= BIT4+BIT5;                       // P1.4 and P1.5 output
+    P1SEL0 |= BIT4+BIT5;                      // P1.4 and P1.5 options select
+    TB0CCR0 = 1000-1;                         // PWM Period
+    TB0CCTL1 = OUTMOD_7;                      // CCR1 reset/set
+    TB0CCR1 = 750;                            // CCR1 PWM duty cycle
+    TB0CCTL2 = OUTMOD_7;                      // CCR2 reset/set
+    TB0CCR2 = 250;                            // CCR2 PWM duty cycle
+    TB0CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
-  TB1CCR0 = 998;
+    __bis_SR_register(LPM0_bits);             // Enter LPM0
+    __no_operation();                         // For debugger
+  }
 
-  //setup timer capture IRQ
-  TB1CCTL1 |= CCIE;
-
-  __enable_interrupt();
- TB1CCTL1 &= ~CCIFG;
- while(1){}
-}
-
-// Timer B0 interrupt service routine
-#pragma vector = TIMER1_B1_VECTOR
-__interrupt void Timer_B (void)
-{
-  LEDToggle(2);
-  P1OUT ^= BIT0;
-  TB1CCTL1 &= ~CCIFG;
-}
