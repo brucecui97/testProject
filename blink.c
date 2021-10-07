@@ -120,5 +120,4 @@ __interrupt void Timer_A (void)
 {
   TA0CCTL1&= ~CCIFG;
   LEDToggle(2);
-  P1OUT ^= BIT0;
 }
