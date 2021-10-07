@@ -89,19 +89,22 @@ void main(void)
 
   TB0CTL |=TBCLR;
   TB0CTL |=TBSSEL__SMCLK;
-  TB0CTL |=MC__CONTINUOUS;
+  TB0CTL |=MC__UP;
+  TB0CCR0 = 16384;
 
-  //setup TB0 overflow IRQ
-  TB0CTL |=TBIE;
+  //setup timer capture IRQ
+  TB0CCTL0 |= CCIE;
+
   __enable_interrupt();
-  TB0CTL &= ~TBIFG;
+ TB0CCTL0 &= ~CCIFG;
+ while(1){}
 }
 
 // Timer B0 interrupt service routine
-#pragma vector = TIMER0_B1_VECTOR
+#pragma vector = TIMER0_B0_VECTOR
 __interrupt void Timer_B (void)
 {
   LEDToggle(2);
   P1OUT ^= BIT0;
-  TB0CTL &= ~TBIFG;
+  TB0CCTL0 &= ~CCIFG;
 }
