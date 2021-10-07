@@ -78,6 +78,7 @@ void LEDToggle(unsigned char LEDn)
     }
 }
 
+int myVariable = 10;
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -89,7 +90,7 @@ void main(void)
     P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
     P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
 
-
+    volatile  int b = myVariable +2;
 
     int pwmPeriod = 1992;
     TB1CCR0 = pwmPeriod;                         // PWM Period
@@ -102,7 +103,24 @@ void main(void)
 
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
+    //setup Timer A
+    LEDInit();
+    TA0CTL |=TACLR;
+    TA0CTL |=MC__CONTINUOUS;
+    TA0CTL |= TBSSEL__SMCLK;
+
+    //setup Capture
+    TA0CCTL0 |=CAP; //put CCR0 into capture mode
+    TA0CCTL0 |= CM_3;//both edges
+    TA0CCTL0 |=CCIS_0;
+
+    int WhatICaptured = 0;
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
   }
 
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void myISR(void){
+    LEDOn(1);
+
+}
