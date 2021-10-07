@@ -94,8 +94,6 @@ void main(void)
 
     TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
     TB1CCR1 = 750;                            // CCR1 PWM duty cycle
-    TB1CCTL2 = OUTMOD_7;                      // CCR2 reset/set
-    TB1CCR2 = 250;                            // CCR2 PWM duty cycle
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
     __bis_SR_register(LPM0_bits);             // Enter LPM0
