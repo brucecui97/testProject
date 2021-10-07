@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Wed Oct  6 17:49:25 2021
+>> Linked Wed Oct  6 17:51:47 2021
 
 OUTPUT FILE NAME:   <testProject.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000c65e
@@ -157,7 +157,7 @@ PORT2      0    0000ffd8    00000002
 
 TIMER1_B1 
 *          0    0000ffda    00000002     
-                  0000ffda    00000002     rts430x_lc_sd_eabi.lib : int37.asm.obj (.int37)
+                  0000ffda    00000002     blink.obj (.int37)
 
 TIMER1_B0 
 *          0    0000ffdc    00000002     
@@ -202,7 +202,7 @@ WDT        0    0000fff2    00000002
 
 TIMER0_B1 
 *          0    0000fff4    00000002     
-                  0000fff4    00000002     blink.obj (.int50)
+                  0000fff4    00000002     rts430x_lc_sd_eabi.lib : int50.asm.obj (.int50)
 
 TIMER0_B0 
 *          0    0000fff6    00000002     
@@ -258,7 +258,6 @@ MODULE SUMMARY
        int34.asm.obj                0      2         0      
        int35.asm.obj                0      2         0      
        int36.asm.obj                0      2         0      
-       int37.asm.obj                0      2         0      
        int38.asm.obj                0      2         0      
        int39.asm.obj                0      2         0      
        int40.asm.obj                0      2         0      
@@ -271,6 +270,7 @@ MODULE SUMMARY
        int47.asm.obj                0      2         0      
        int48.asm.obj                0      2         0      
        int49.asm.obj                0      2         0      
+       int50.asm.obj                0      2         0      
        int51.asm.obj                0      2         0      
        int52.asm.obj                0      2         0      
        int53.asm.obj                0      2         0      

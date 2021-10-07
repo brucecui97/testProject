@@ -87,26 +87,25 @@ void main(void)
   P1DIR |= BIT0;
   P1OUT |= BIT0;
 
-  TB0CTL |=TBCLR;
-  TB0CTL |=TBSSEL__SMCLK;
-  TB0CTL |=MC__UP;
+  TB1CTL |=TBCLR;
+  TB1CTL |=TBSSEL__SMCLK;
+  TB1CTL |=MC__UP;
 
-  TB0CCR0 = 16384;
-
+  TB1CCR0 = 16384;
 
   //setup timer capture IRQ
-  TB0CCTL1 |= CCIE;
+  TB1CCTL1 |= CCIE;
 
   __enable_interrupt();
- TB0CCTL1 &= ~CCIFG;
+ TB1CCTL1 &= ~CCIFG;
  while(1){}
 }
 
 // Timer B0 interrupt service routine
-#pragma vector = TIMER0_B1_VECTOR
+#pragma vector = TIMER1_B1_VECTOR
 __interrupt void Timer_B (void)
 {
   LEDToggle(2);
   P1OUT ^= BIT0;
-  TB0CCTL1 &= ~CCIFG;
+  TB1CCTL1 &= ~CCIFG;
 }
