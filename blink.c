@@ -79,6 +79,9 @@ void LEDToggle(unsigned char LEDn)
 }
 
 int myVariable = 10;
+const int ARRAY_SIZE = 10;
+volatile int counterValue[ARRAY_SIZE];
+volatile int count = 0;
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -89,8 +92,6 @@ void main(void)
 
     P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
     P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
-
-    volatile  int b = myVariable +2;
 
     int pwmPeriod = 1992;
     TB1CCR0 = pwmPeriod;                         // PWM Period
@@ -113,6 +114,9 @@ void main(void)
     __enable_interrupt();
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
+    while(1){
+        volatile  int b = counterValue;
+    }
   }
 
 #pragma vector = TIMER0_A1_VECTOR
@@ -120,4 +124,9 @@ __interrupt void Timer_A (void)
 {
   TA0CCTL1&= ~CCIFG;
   LEDToggle(2);
-}
+  if (count<10){
+      counterValue[count] = TA0CCR1;
+  }
+  count = count+1;
+  }
+
