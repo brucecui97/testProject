@@ -87,11 +87,14 @@ void main(void)
   P1DIR |= BIT0;
   P1OUT |= BIT0;
 
-  TB0CCTL1 = CCIE;                          // TACCR0 interrupt enabled
-  TB0CCR0 = 996;
-  TB0CTL = TBSSEL_2 + MC_1;                 // SMCLK, UP mode
+  TB0CTL |=TBCLR;
+  TB0CTL |=TBSSEL__SMCLK;
+  TB0CTL |=MC__CONTINUOUS;
 
-  __bis_SR_register(LPM0_bits + GIE);       // Enter LPM0 w/ interrupt
+  //setup TB0 overflow IRQ
+  TB0CTL |=TBIE;
+  __enable_interrupt();
+  TB0CTL &= ~TBIFG;
 }
 
 // Timer B0 interrupt service routine
@@ -100,4 +103,5 @@ __interrupt void Timer_B (void)
 {
   LEDToggle(2);
   P1OUT ^= BIT0;
+  TB0CTL &= ~TBIFG;
 }
