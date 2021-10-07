@@ -90,10 +90,10 @@ void main(void)
     P1SEL0 |= BIT4+BIT5 + BIT6;                      // P1.4 and P1.5 options select
 
 
-    TB1CCR0 = 1000-1;                         // PWM Period
+    TB1CCR0 = 1000;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
-    TB1CCR1 = 750;                            // CCR1 PWM duty cycle
+    TB1CCR1 = 500;                            // CCR1 PWM duty cycle
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
     __bis_SR_register(LPM0_bits);             // Enter LPM0
