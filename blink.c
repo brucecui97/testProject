@@ -86,8 +86,8 @@ void main(void)
     CSCTL2 = SELA_3 + SELS_3 + SELM_3;        // set ACLK = SMCLK = DCO/8
     CSCTL3 = DIVA_3 + DIVS_3 + DIVM_3;        // set all dividers
 
-    P1DIR |= BIT4+BIT5+BIT6;                       // P1.4 and P1.5 output
-    P1SEL0 |= BIT4+BIT5 + BIT6;                      // P1.4 and P1.5 options select
+    P1DIR |= BIT6;                       // P1.4 and P1.5 output
+    P1SEL0 |= BIT6;                      // P1.4 and P1.5 options select
 
 
     int pwmPeriod = 1992;
