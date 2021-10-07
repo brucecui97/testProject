@@ -97,7 +97,7 @@ void main(void)
     TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
 
     TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
-    TB1CCR2 = pwmPeriod*3/4;                            // CCR1 PWM duty cycle
+    TB1CCR2 = pwmPeriod*3/4.0;                            // CCR1 PWM duty cycle
 
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
