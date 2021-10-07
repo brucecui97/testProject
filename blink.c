@@ -79,7 +79,7 @@ void LEDToggle(unsigned char LEDn)
 }
 
 int myVariable = 10;
-const int ARRAY_SIZE = 10;
+const int ARRAY_SIZE = 100;
 volatile int counterValue[ARRAY_SIZE];
 volatile int count = 0;
 void main(void)
@@ -124,7 +124,7 @@ __interrupt void Timer_A (void)
 {
   TA0CCTL1&= ~CCIFG;
   LEDToggle(2);
-  if (count<10){
+  if (count<100){
       counterValue[count] = TA0CCR1;
   }
   count = count+1;

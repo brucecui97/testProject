@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Thu Oct  7 14:41:43 2021
+>> Linked Thu Oct  7 14:43:27 2021
 
 OUTPUT FILE NAME:   <testProject.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000c73e
@@ -16,7 +16,7 @@ MEMORY CONFIGURATION
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00000400  000000c0  00000340  RWIX
+  RAM                   00001c00   00000400  00000174  0000028c  RWIX
   FRAM                  0000c200   00003d80  000005a2  000037de  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
@@ -132,12 +132,12 @@ section   page    origin      length       input sections
                   0000c79c    00000004                            : pre_init.c.obj (.text:_system_pre_init)
                   0000c7a0    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
-.bss       0    00001c00    00000014     UNINITIALIZED
-                  00001c00    00000014     (.common:counterValue)
+.bss       0    00001c00    000000c8     UNINITIALIZED
+                  00001c00    000000c8     (.common:counterValue)
 
-.data      0    00001c14    0000000c     UNINITIALIZED
-                  00001c14    00000008     blink.obj (.data:leds)
-                  00001c1c    00000004     blink.obj (.data)
+.data      0    00001cc8    0000000c     UNINITIALIZED
+                  00001cc8    00000008     blink.obj (.data:leds)
+                  00001cd0    00000004     blink.obj (.data)
 
 .stack     0    00001f60    000000a0     UNINITIALIZED
                   00001f60    00000002     rts430x_lc_sd_eabi.lib : boot.c.obj (.stack)
@@ -242,9 +242,9 @@ MODULE SUMMARY
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
     .\
-       blink.obj                    248    2         32     
+       blink.obj                    248    2         212    
     +--+----------------------------+------+---------+---------+
-       Total:                       248    2         32     
+       Total:                       248    2         212    
                                                             
     D:\ccs\ccs_base\msp430\lib\FR57xx\MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib
        mpu_init_fr57xx.obj          34     0         0      
@@ -293,14 +293,14 @@ MODULE SUMMARY
        Stack:                       0      0         160    
        Linker Generated:            0      51        0      
     +--+----------------------------+------+---------+---------+
-       Grand Total:                 930    101       192    
+       Grand Total:                 930    101       372    
 
 
 LINKER GENERATED COPY TABLES
 
 __TI_cinit_table @ 0000c224 records: 2, size/record: 8, table size: 16
-	.data: load addr=0000c200, load size=00000011 bytes, run addr=00001c14, run size=0000000c bytes, compression=lzss
-	.bss: load addr=0000c21e, load size=00000006 bytes, run addr=00001c00, run size=00000014 bytes, compression=zero_init
+	.data: load addr=0000c200, load size=00000011 bytes, run addr=00001cc8, run size=0000000c bytes, compression=lzss
+	.bss: load addr=0000c21e, load size=00000006 bytes, run addr=00001c00, run size=000000c8 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
@@ -910,16 +910,16 @@ ffffffff  __c_args__
 0000c7a0  _system_post_cinit                     
 0000c79c  _system_pre_init                       
 0000c796  abort                                  
-00001c1e  count                                  
+00001cd2  count                                  
 00001c00  counterValue                           
 0000c200  fram_ro_start                          
 0000c200  fram_rw_start                          
 0000c400  fram_rx_start                          
-00001c14  leds                                   
+00001cc8  leds                                   
 0000c4ee  main                                   
 00000001  mpusb1                                 
 00000002  mpusb2                                 
-00001c1c  myVariable                             
+00001cd0  myVariable                             
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1469,9 +1469,9 @@ address   name
 000008ce  CDIV_L                                 
 000008cf  CDIV_H                                 
 00001c00  counterValue                           
-00001c14  leds                                   
-00001c1c  myVariable                             
-00001c1e  count                                  
+00001cc8  leds                                   
+00001cd0  myVariable                             
+00001cd2  count                                  
 00001f60  _stack                                 
 00002000  __STACK_END                            
 00007513  __mpusam                               
