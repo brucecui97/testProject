@@ -106,7 +106,8 @@ void main(void)
     //setup Timer A
     LEDInit();
 
-    TA0CCTL1 = CCIE;                          // TACCR0 interrupt enabled
+    P1SEL0 |= BIT0;
+    TA0CCTL1 = CCIE + CM_3 + CCIS_0 + CAP;                          // TACCR0 interrupt enabled
     TA0CTL = TASSEL_2 + MC_2;                 // SMCLK, UP mode            // SMCLK, UP mode
 
     __enable_interrupt();
