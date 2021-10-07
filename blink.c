@@ -86,14 +86,25 @@ void main(void)
     CSCTL2 = SELA_3 + SELS_3 + SELM_3;        // set ACLK = SMCLK = DCO/8
     CSCTL3 = DIVA_3 + DIVS_3 + DIVM_3;        // set all dividers
 
-    P1DIR |= BIT4+BIT5;                       // P1.4 and P1.5 output
-    P1SEL0 |= BIT4+BIT5;                      // P1.4 and P1.5 options select
+    P1DIR |= BIT4+BIT5+BIT6;                       // P1.4 and P1.5 output
+    P1SEL0 |= BIT4+BIT5 + BIT6;                      // P1.4 and P1.5 options select
+
     TB0CCR0 = 1000-1;                         // PWM Period
+
     TB0CCTL1 = OUTMOD_7;                      // CCR1 reset/set
     TB0CCR1 = 750;                            // CCR1 PWM duty cycle
     TB0CCTL2 = OUTMOD_7;                      // CCR2 reset/set
     TB0CCR2 = 250;                            // CCR2 PWM duty cycle
     TB0CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
+
+
+    TB1CCR0 = 1000-1;                         // PWM Period
+
+    TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
+    TB1CCR1 = 750;                            // CCR1 PWM duty cycle
+    TB1CCTL2 = OUTMOD_7;                      // CCR2 reset/set
+    TB1CCR2 = 250;                            // CCR2 PWM duty cycle
+    TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
