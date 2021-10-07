@@ -91,7 +91,7 @@ void main(void)
   TB1CTL |=TBSSEL__SMCLK;
   TB1CTL |=MC__UP;
 
-  TB1CCR0 = 16384;
+  TB1CCR0 = 998;
 
   //setup timer capture IRQ
   TB1CCTL1 |= CCIE;
