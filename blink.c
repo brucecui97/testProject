@@ -93,7 +93,7 @@ void main(void)
     P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
     P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
 
-    int pwmPeriod = 1992;
+    int pwmPeriod = 2000;
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
