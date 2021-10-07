@@ -78,7 +78,6 @@ void LEDToggle(unsigned char LEDn)
     }
 }
 
-int myVariable = 10;
 const int ARRAY_SIZE = 100;
 volatile int counterValue[ARRAY_SIZE];
 volatile int count = 0;
@@ -114,9 +113,7 @@ void main(void)
     __enable_interrupt();
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
-    while(1){
-        volatile  int b = counterValue;
-    }
+    while(1);
   }
 
 #pragma vector = TIMER0_A1_VECTOR
