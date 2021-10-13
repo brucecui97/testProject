@@ -44,6 +44,9 @@
 #define ACC_Y_CHANNEL     ADC10INCH_13
 #define ACC_Z_CHANNEL     ADC10INCH_14
 
+volatile unsigned int x_acc = 0;
+volatile unsigned int y_acc = 0;
+volatile unsigned int z_acc = 0;
 void SetupAccel(void)
 {
   //Setup  accelerometer
@@ -80,8 +83,41 @@ volatile unsigned int ADCResult = 0;
 int main(void){
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
     SetupAccel();
-    TakeADCMeas();
-    while(1);
+
+    while(1){
+        //loop through x y z axis to get the values and store them in global variable
+        //setup new ADC on different port
+
+        ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
+        ADC10CTL0 = ADC10ON + ADC10SHT_5;
+        ADC10CTL1 = ADC10SHS_0 + ADC10SHP + ADC10CONSEQ_0 + ADC10SSEL_0;
+        ADC10CTL2 = ADC10RES;
+        ADC10MCTL0 = ADC10SREF_0 + ADC10INCH_12;
+        ADC10IV = 0x00;                          // Clear all ADC12 channel int flags
+        ADC10IE |= ADC10IE0;
+        TakeADCMeas();
+        x_acc = ADCResult>>2;
+
+        ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
+        ADC10CTL0 = ADC10ON + ADC10SHT_5;
+        ADC10CTL1 = ADC10SHS_0 + ADC10SHP + ADC10CONSEQ_0 + ADC10SSEL_0;
+        ADC10CTL2 = ADC10RES;
+        ADC10MCTL0 = ADC10SREF_0 + ADC10INCH_13;
+        ADC10IV = 0x00;                          // Clear all ADC12 channel int flags
+        ADC10IE |= ADC10IE0;
+        TakeADCMeas();
+        y_acc = ADCResult>>2;
+
+        ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
+        ADC10CTL0 = ADC10ON + ADC10SHT_5;
+        ADC10CTL1 = ADC10SHS_0 + ADC10SHP + ADC10CONSEQ_0 + ADC10SSEL_0;
+        ADC10CTL2 = ADC10RES;
+        ADC10MCTL0 = ADC10SREF_0 + ADC10INCH_14;
+        ADC10IV = 0x00;                          // Clear all ADC12 channel int flags
+        ADC10IE |= ADC10IE0;
+        TakeADCMeas();
+        z_acc = ADCResult>>2;
+    }
 }
 
 #pragma vector=ADC10_VECTOR
