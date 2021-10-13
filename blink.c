@@ -97,8 +97,10 @@ int main(void)
   ADC10CTL0 = ADC10SHT_8 + ADC10ON;         // 16 ADC10CLKs; ADC ON,temperature sample period>30us
   ADC10CTL1 = ADC10SHP + ADC10CONSEQ_0;     // s/w trig, single ch/conv
   ADC10CTL2 = ADC10RES;                     // 10-bit conversion results
-  ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_10;  // ADC input ch A10 => temp sense
+  ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_4;  // ADC input ch A10 => temp sense
 
+  P2DIR|=BIT7;
+  P2OUT|=BIT7;
   // Configure internal reference
   while(REFCTL0 & REFGENBUSY);              // If ref generator busy, WAIT
   REFCTL0 |= REFVSEL_0+REFON;               // Select internal ref = 1.5V
@@ -144,7 +146,7 @@ int main(void)
     IntDegF = 9*IntDegC/5+32;
 
     LEDInit();
-    int roomTemp = 527;
+    int roomTemp = 516;
     if (temp>=roomTemp){
         LEDOn(1);
         LEDOn(2);
