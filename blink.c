@@ -177,9 +177,24 @@ __interrupt void Timer_B (void)
 {
   P1OUT ^= BIT0;
   TB1CCTL1 &= ~CCIFG;
-  UCA0TXBUF = 123;
-  UCA0TXBUF = 124;
-  //UCA0TXBUF = 125;
+  if (currState == UNKNOWN_ACC){
+      UCA0TXBUF = 255;
+      currState = X_ACC;
+  }
+  else if (currState == X_ACC){
+      UCA0TXBUF = x_acc;
+      currState = Y_ACC;
+  }
+  else if (currState == Y_ACC){
+      UCA0TXBUF = y_acc;
+      currState = Z_ACC;
+
+  }
+  else if (currState == Z_ACC){
+      UCA0TXBUF = z_acc;
+      currState = UNKNOWN_ACC;
+
+  }
 }
 
 
