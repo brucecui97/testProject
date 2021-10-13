@@ -143,6 +143,30 @@ int main(void)
     // Tf = (9/5)*Tc + 32
     IntDegF = 9*IntDegC/5+32;
 
+    LEDInit();
+    int roomTemp = 527;
+    if (temp>=roomTemp){
+        LEDOn(1);
+        LEDOn(2);
+    }
+    if (temp>=roomTemp+1){
+        LEDOn(3);
+    }
+    if (temp>=roomTemp+2){
+        LEDOn(4);
+    }
+    if (temp>=roomTemp+3){
+        LEDOn(5);
+    }
+    if (temp>=roomTemp+4){
+        LEDOn(6);
+    }
+    if (temp>=roomTemp+5){
+        LEDOn(7);
+    }
+    if (temp>=roomTemp+6){
+        LEDOn(8);
+    }
     __no_operation();                       // SET BREAKPOINT HERE
 
   }
