@@ -44,9 +44,17 @@
 #define ACC_Y_CHANNEL     ADC10INCH_13
 #define ACC_Z_CHANNEL     ADC10INCH_14
 
+#define X_ACC 1
+#define Y_ACC 2
+#define Z_ACC 3
+#define UNKNOWN_ACC 4
+
+
+
 volatile unsigned int x_acc = 0;
 volatile unsigned int y_acc = 0;
 volatile unsigned int z_acc = 0;
+volatile unsigned int currState = UNKNOWN_ACC;
 void SetupAccel(void)
 {
   //Setup  accelerometer
@@ -95,6 +103,16 @@ int main(void){
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
     P1DIR |= BIT0;
     P1OUT |= BIT0;
+
+    // Configure ports for UCA0
+    P2SEL0 &= ~(BIT0 + BIT1);
+    P2SEL1 |= BIT0 + BIT1;
+
+    // Configure UCA0
+    UCA0CTLW0 = UCSSEL0;
+    UCA0BRW = 52;
+    UCA0MCTLW = 0x4900 + UCOS16 + UCBRF0;
+    UCA0IE |= UCRXIE;
 
     SetupAccel();
 
@@ -159,6 +177,9 @@ __interrupt void Timer_B (void)
 {
   P1OUT ^= BIT0;
   TB1CCTL1 &= ~CCIFG;
+  UCA0TXBUF = 123;
+  UCA0TXBUF = 124;
+  //UCA0TXBUF = 125;
 }
 
 
