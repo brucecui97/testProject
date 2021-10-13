@@ -17,70 +17,15 @@
 //***************************************************************************************
 
 #include "msp430fr5739.h"
-
-#define CALADC10_15V_30C  *((unsigned int *)0x1A1A)   // Temperature Sensor Calibration-30 C
-                                                      //See device datasheet for TLV table memory mapping
-#define CALADC10_15V_85C  *((unsigned int *)0x1A1C)   // Temperature Sensor Calibration-85 C
-
-
-#define LED1 BIT0
-#define LED2 BIT1
-#define LED3 BIT2
-#define LED4 BIT3
-#define LED5 BIT4
-#define LED6 BIT5
-#define LED7 BIT6
-#define LED8 BIT7
-
-
-//array of led pins
-unsigned char leds[]={LED1, LED2, LED3, LED4, LED5, LED6, LED7, LED8};
-
-void LEDInit(void)
-{
-    //first four bits
-    PJDIR |= LED1 + LED2 + LED3 + LED4;
-    //Leds Off
-    PJOUT &= ~(LED1 + LED2 + LED3 + LED4);
-    //last four leds
-    P3DIR |= LED5 + LED6 + LED7 + LED8;
-    //Leds Off
-    P3OUT &= ~(LED5 + LED6 + LED7 + LED8);
-}
-
-void LEDOn(unsigned char LEDn)
-{
-    if ((LEDn > 0) && (LEDn <= 4))
-    {
-        PJOUT |= leds[--LEDn];
-    }
-    if ((LEDn > 4) && (LEDn <= 8))
-    {
-        P3OUT |= leds[--LEDn];
-    }
-}
-void LEDOff(unsigned char LEDn)
-{
-    if ((LEDn > 0) && (LEDn <= 4))
-    {
-        PJOUT &= ~leds[--LEDn];
-    }
-    if ((LEDn > 4) && (LEDn <= 8))
-    {
-        P3OUT &= ~leds[--LEDn];
-    }
-}
-void LEDToggle(unsigned char LEDn)
-{
-    if ((LEDn > 0) && (LEDn <= 4))
-    {
-        PJOUT ^= leds[--LEDn];
-    }
-    if ((LEDn > 4) && (LEDn <= 8))
-    {
-        P3OUT ^= leds[--LEDn];
-    }
-}
+// The FRAM section from 0xD000 - 0xF000 is used by all modes
+// for performing writes to FRAM
+// Do not use this section for code or data placement.
+// It will get overwritten!
+#define ADC_START_ADD 0xD400
+#define ADC_END_ADD 0xF000
+#define FRAM_TEST_START 0xD400
+#define FRAM_TEST_END 0xF000
+#define MEM_UNIT 0x200
 
 // Pin Definitions
 #define ACC_PWR_PIN       BIT7
@@ -99,132 +44,31 @@ void LEDToggle(unsigned char LEDn)
 #define ACC_Y_CHANNEL     ADC10INCH_13
 #define ACC_Z_CHANNEL     ADC10INCH_14
 
-volatile long temp;
-volatile long IntDegF;
-volatile long IntDegC;
-volatile unsigned char transmittedVal;
-volatile unsigned char testConstant;
-
-int main(void)
+void SetupAccel(void)
 {
-  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
-  LEDInit();
-  //1. Configure P2.7 to output high to power the accelerometer.
+  //Setup  accelerometer
+  // ~20KHz sampling
+  //Configure GPIO
   ACC_PORT_SEL0 |= ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN;    //Enable A/D channel inputs
   ACC_PORT_SEL1 |= ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN;
   ACC_PORT_DIR &= ~(ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN);
   ACC_PWR_PORT_DIR |= ACC_PWR_PIN;              //Enable ACC_POWER
   ACC_PWR_PORT_OUT |= ACC_PWR_PIN;
 
-//
-//
-  // Configure ADC10 - Pulse sample mode; ADC10SC trigger
-  ADC10CTL0 = ADC10SHT_8 + ADC10ON;         // 16 ADC10CLKs; ADC ON,temperature sample period>30us
-  ADC10CTL1 = ADC10SHP + ADC10CONSEQ_0;     // s/w trig, single ch/conv
-  ADC10CTL2 = ADC10RES;                     // 10-bit conversion results
-  //ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_10;  // ADC input ch A10 => temp sense
+  // Allow the accelerometer to settle before sampling any data
+  __delay_cycles(200000);
 
-  //2. Set up the ADC to sample from ports A12, A13, and A14.
-  ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_12;
-
-  // Configure internal reference
-  while(REFCTL0 & REFGENBUSY);              // If ref generator busy, WAIT
-  REFCTL0 |= REFVSEL_0+REFON;               // Select internal ref = 1.5V
-                                            // Internal Reference ON
-  ADC10IE |=ADC10IE0;                       // enable the Interrupt request for a completed ADC10_B conversion
-
-  __delay_cycles(400);                      // Delay for Ref to settle
-
-
-  //configure UART
-  // Configure clocks and timer
-  CSCTL0 = 0xA500;                        // Write password to modify CS registers
-  CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
-  CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
-
-  int pwmPeriod = 12400;
-  TB1CCR0 = pwmPeriod;                         // PWM Period
-
-  TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
-  TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
-  TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
-  P1DIR |= BIT0;
-  P1OUT |= BIT0;
-
-  // Configure ports for UCA0
-  P2SEL0 &= ~(BIT0 + BIT1);
-  P2SEL1 |= BIT0 + BIT1;
-
-  // Configure UCA0
-  UCA0CTLW0 = UCSSEL0;
-  UCA0BRW = 52;
-  UCA0MCTLW = 0x4900 + UCOS16 + UCBRF0;
-  UCA0IE |= UCRXIE;
-
-  // global interrupt enable
-  _EINT();
-
-  while(1)
-  {
-    ADC10CTL0 |= ADC10ENC + ADC10SC;        // Sampling and conversion start
-
-    __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
-    __no_operation();                       // SET BREAKPOINT HERE
-
-  }
+  //Single channel, once,
+  ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
+  ADC10CTL0 = ADC10ON + ADC10SHT_5;
+  ADC10CTL1 = ADC10SHS_0 + ADC10SHP + ADC10CONSEQ_0 + ADC10SSEL_0;
+  ADC10CTL2 = ADC10RES;
+  ADC10MCTL0 = ADC10SREF_0 + ADC10INCH_12;
+  ADC10IV = 0x00;                          // Clear all ADC12 channel int flags
+  ADC10IE |= ADC10IE0;
 }
 
-#pragma vector = USCI_A0_VECTOR
-__interrupt void USCI_A0_ISR(void)
-{
-    unsigned char RxByte;
-    RxByte = UCA0RXBUF;
-    while ((UCA0IFG & UCTXIFG)==0);
-    UCA0TXBUF = RxByte;
-    if (RxByte == 'j'){
-        LEDOn(1);
-    }
-    else if (RxByte == 'k'){
-        LEDOff(1);
-    }
-    while ((UCA0IFG & UCTXIFG)==0);
-    UCA0TXBUF = RxByte;
-    while ((UCA0IFG & UCTXIFG)==0);
-    UCA0TXBUF = RxByte+1;
+int main(void){
+    while(1);
+
 }
-
-
-// ADC10 interrupt service routine
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-#pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR(void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
-#else
-#error Compiler not supported!
-#endif
-{
-  switch(__even_in_range(ADC10IV,12))
-  {
-    case  0: break;                          // No interrupt
-    case  2: break;                          // conversion result overflow
-    case  4: break;                          // conversion time overflow
-    case  6: break;                          // ADC10HI
-    case  8: break;                          // ADC10LO
-    case 10: break;                          // ADC10IN
-    case 12: temp = ADC10MEM0;
-                P1OUT ^= BIT0;
-             __bic_SR_register_on_exit(LPM4_bits);
-             ADC10IFG &= ~ADC10IFG0;
-             break;                          // Clear CPUOFF bit from 0(SR)
-    default: break;
-  }
-}
-
-#pragma vector = TIMER1_B1_VECTOR
-__interrupt void Timer_B (void)
-{
-  LEDToggle(2);
-  TB1CCTL1 &= ~CCIFG;
-}
-
