@@ -92,12 +92,19 @@ int main(void)
 {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
   LEDInit();
-  testConstant = 200;
+  //1. Configure P2.7 to output high to power the accelerometer.
+  P2DIR|=BIT7;
+  P2OUT|= BIT7;
+//
+//
   // Configure ADC10 - Pulse sample mode; ADC10SC trigger
   ADC10CTL0 = ADC10SHT_8 + ADC10ON;         // 16 ADC10CLKs; ADC ON,temperature sample period>30us
   ADC10CTL1 = ADC10SHP + ADC10CONSEQ_0;     // s/w trig, single ch/conv
   ADC10CTL2 = ADC10RES;                     // 10-bit conversion results
-  ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_10;  // ADC input ch A10 => temp sense
+  //ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_10;  // ADC input ch A10 => temp sense
+
+  //2. Set up the ADC to sample from ports A12, A13, and A14.
+  ADC10MCTL0 = ADC10SREF_1 + ADC10INCH_12;
 
   // Configure internal reference
   while(REFCTL0 & REFGENBUSY);              // If ref generator busy, WAIT
@@ -109,10 +116,19 @@ int main(void)
 
 
   //configure UART
-  // Configure clocks
+  // Configure clocks and timer
   CSCTL0 = 0xA500;                        // Write password to modify CS registers
   CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
   CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
+
+  int pwmPeriod = 12400;
+  TB1CCR0 = pwmPeriod;                         // PWM Period
+
+  TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
+  TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+  TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
+  P1DIR |= BIT0;
+  P1OUT |= BIT0;
 
   // Configure ports for UCA0
   P2SEL0 &= ~(BIT0 + BIT1);
@@ -132,41 +148,6 @@ int main(void)
     ADC10CTL0 |= ADC10ENC + ADC10SC;        // Sampling and conversion start
 
     __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
-    __no_operation();
-
-    // Temperature in Celsius
-    // The temperature (Temp, ¡ãC)=
-    IntDegC = (temp - CALADC10_15V_30C) *  (85-30)/(CALADC10_15V_85C-CALADC10_15V_30C) +30;
-    transmittedVal = (unsigned char) (temp>>2);
-    UCA0TXBUF = transmittedVal;
-    // Temperature in Fahrenheit
-    // Tf = (9/5)*Tc + 32
-    IntDegF = 9*IntDegC/5+32;
-
-    LEDInit();
-    int roomTemp = 527;
-    if (temp>=roomTemp){
-        LEDOn(1);
-        LEDOn(2);
-    }
-    if (temp>=roomTemp+1){
-        LEDOn(3);
-    }
-    if (temp>=roomTemp+2){
-        LEDOn(4);
-    }
-    if (temp>=roomTemp+3){
-        LEDOn(5);
-    }
-    if (temp>=roomTemp+4){
-        LEDOn(6);
-    }
-    if (temp>=roomTemp+5){
-        LEDOn(7);
-    }
-    if (temp>=roomTemp+6){
-        LEDOn(8);
-    }
     __no_operation();                       // SET BREAKPOINT HERE
 
   }
@@ -215,5 +196,13 @@ void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
              break;                          // Clear CPUOFF bit from 0(SR)
     default: break;
   }
+}
+
+#pragma vector = TIMER1_B1_VECTOR
+__interrupt void Timer_B (void)
+{
+  LEDToggle(2);
+  P1OUT ^= BIT0;
+  TB1CCTL1 &= ~CCIFG;
 }
 
