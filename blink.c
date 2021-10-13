@@ -56,7 +56,7 @@ void SetupAccel(void)
   ACC_PWR_PORT_OUT |= ACC_PWR_PIN;
 
   // Allow the accelerometer to settle before sampling any data
-  __delay_cycles(200000);
+  __delay_cycles(2000);
 
   //Single channel, once,
   ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
@@ -68,8 +68,18 @@ void SetupAccel(void)
   ADC10IE |= ADC10IE0;
 }
 
+void TakeADCMeas(void)
+{
+  while (ADC10CTL1 & BUSY);
+  ADC10CTL0 |= ADC10ENC | ADC10SC ;       // Start conversion
+  __bis_SR_register(CPUOFF + GIE);        // LPM0, ADC10_ISR will force exit
+  __no_operation();                       // For debug only
+}
+
 volatile unsigned int ADCResult = 0;
 int main(void){
+    SetupAccel();
+    TakeADCMeas();
     while(1);
 }
 
@@ -91,3 +101,4 @@ __interrupt void ADC10_ISR(void)
     default: break;
   }
 }
+
