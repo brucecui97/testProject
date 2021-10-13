@@ -130,7 +130,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         x_acc = ADCResult>>2;
-        __delay_cycles(2000);
+        __delay_cycles(9000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
         ADC10CTL0 = ADC10ON + ADC10SHT_5;
@@ -141,7 +141,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         y_acc = ADCResult>>2;
-        __delay_cycles(2000);
+        __delay_cycles(9000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
         ADC10CTL0 = ADC10ON + ADC10SHT_5;
@@ -152,7 +152,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         z_acc = ADCResult>>2;
-        __delay_cycles(2000);
+        __delay_cycles(9000);
     }
 }
 
