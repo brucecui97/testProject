@@ -138,7 +138,7 @@ int main(void)
     // Temperature in Celsius
     // The temperature (Temp, ¡ãC)=
     IntDegC = (temp - CALADC10_15V_30C) *  (85-30)/(CALADC10_15V_85C-CALADC10_15V_30C) +30;
-    transmittedVal = (unsigned char) temp>>2;
+    transmittedVal = (unsigned char) (temp>>2);
     UCA0TXBUF = transmittedVal;
     // Temperature in Fahrenheit
     // Tf = (9/5)*Tc + 32
