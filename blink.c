@@ -129,7 +129,6 @@ int main(void)
 
   while(1)
   {
-    UCA0TXBUF = testConstant;
     ADC10CTL0 |= ADC10ENC + ADC10SC;        // Sampling and conversion start
 
     __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
