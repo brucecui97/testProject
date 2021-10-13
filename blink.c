@@ -82,6 +82,23 @@ void LEDToggle(unsigned char LEDn)
     }
 }
 
+// Pin Definitions
+#define ACC_PWR_PIN       BIT7
+#define ACC_PWR_PORT_DIR  P2DIR
+#define ACC_PWR_PORT_OUT  P2OUT
+#define ACC_PORT_DIR      P3DIR
+#define ACC_PORT_OUT      P3OUT
+#define ACC_PORT_SEL0     P3SEL0
+#define ACC_PORT_SEL1     P3SEL1
+#define ACC_X_PIN         BIT0
+#define ACC_Y_PIN         BIT1
+#define ACC_Z_PIN         BIT2
+
+// Accelerometer Input Channel Definitions
+#define ACC_X_CHANNEL     ADC10INCH_12
+#define ACC_Y_CHANNEL     ADC10INCH_13
+#define ACC_Z_CHANNEL     ADC10INCH_14
+
 volatile long temp;
 volatile long IntDegF;
 volatile long IntDegC;
@@ -93,8 +110,12 @@ int main(void)
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
   LEDInit();
   //1. Configure P2.7 to output high to power the accelerometer.
-  P2DIR|=BIT7;
-  P2OUT|= BIT7;
+  ACC_PORT_SEL0 |= ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN;    //Enable A/D channel inputs
+  ACC_PORT_SEL1 |= ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN;
+  ACC_PORT_DIR &= ~(ACC_X_PIN + ACC_Y_PIN + ACC_Z_PIN);
+  ACC_PWR_PORT_DIR |= ACC_PWR_PIN;              //Enable ACC_POWER
+  ACC_PWR_PORT_OUT |= ACC_PWR_PIN;
+
 //
 //
   // Configure ADC10 - Pulse sample mode; ADC10SC trigger
@@ -192,7 +213,9 @@ void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
     case  8: break;                          // ADC10LO
     case 10: break;                          // ADC10IN
     case 12: temp = ADC10MEM0;
+                P1OUT ^= BIT0;
              __bic_SR_register_on_exit(LPM4_bits);
+             ADC10IFG &= ~ADC10IFG0;
              break;                          // Clear CPUOFF bit from 0(SR)
     default: break;
   }
@@ -202,7 +225,6 @@ void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
 __interrupt void Timer_B (void)
 {
   LEDToggle(2);
-  P1OUT ^= BIT0;
   TB1CCTL1 &= ~CCIFG;
 }
 
