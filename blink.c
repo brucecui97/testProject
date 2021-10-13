@@ -68,7 +68,26 @@ void SetupAccel(void)
   ADC10IE |= ADC10IE0;
 }
 
+volatile unsigned int ADCResult = 0;
 int main(void){
     while(1);
+}
 
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR(void)
+{
+  switch(__even_in_range(ADC10IV,ADC10IV_ADC10IFG))
+  {
+    case ADC10IV_NONE: break;               // No interrupt
+    case ADC10IV_ADC10OVIFG: break;         // conversion result overflow
+    case ADC10IV_ADC10TOVIFG: break;        // conversion time overflow
+    case ADC10IV_ADC10HIIFG: break;         // ADC10HI
+    case ADC10IV_ADC10LOIFG: break;         // ADC10LO
+    case ADC10IV_ADC10INIFG: break;         // ADC10IN
+    case ADC10IV_ADC10IFG:
+             ADCResult = ADC10MEM0;
+             __bic_SR_register_on_exit(CPUOFF);
+             break;                          // Clear CPUOFF bit from 0(SR)
+    default: break;
+  }
 }
