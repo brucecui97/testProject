@@ -130,6 +130,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         x_acc = ADCResult>>2;
+        __delay_cycles(2000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
         ADC10CTL0 = ADC10ON + ADC10SHT_5;
@@ -140,6 +141,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         y_acc = ADCResult>>2;
+        __delay_cycles(2000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
         ADC10CTL0 = ADC10ON + ADC10SHT_5;
@@ -150,6 +152,7 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         z_acc = ADCResult>>2;
+        __delay_cycles(2000);
     }
 }
 
@@ -166,6 +169,7 @@ __interrupt void ADC10_ISR(void)
     case ADC10IV_ADC10INIFG: break;         // ADC10IN
     case ADC10IV_ADC10IFG:
              ADCResult = ADC10MEM0;
+             P1OUT ^= BIT0;
              __bic_SR_register_on_exit(CPUOFF);
              break;                          // Clear CPUOFF bit from 0(SR)
     default: break;
@@ -175,7 +179,6 @@ __interrupt void ADC10_ISR(void)
 #pragma vector = TIMER1_B1_VECTOR
 __interrupt void Timer_B (void)
 {
-  P1OUT ^= BIT0;
   TB1CCTL1 &= ~CCIFG;
   if (currState == UNKNOWN_ACC){
       UCA0TXBUF = 255;
