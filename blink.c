@@ -126,7 +126,7 @@ int main(void)
 
   while(1)
   {
-     UCA0TXBUF = 'c';
+    UCA0TXBUF = 'c';
     ADC10CTL0 |= ADC10ENC + ADC10SC;        // Sampling and conversion start
 
     __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
@@ -135,7 +135,7 @@ int main(void)
     // Temperature in Celsius
     // The temperature (Temp, °„C)=
     IntDegC = (temp - CALADC10_15V_30C) *  (85-30)/(CALADC10_15V_85C-CALADC10_15V_30C) +30;
-
+    UCA0TXBUF = temp;
     // Temperature in Fahrenheit
     // Tf = (9/5)*Tc + 32
     IntDegF = 9*IntDegC/5+32;
