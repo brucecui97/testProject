@@ -82,7 +82,22 @@ void TakeADCMeas(void)
 volatile unsigned int ADCResult = 0;
 int main(void){
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+    // Configure clocks and timer
+    CSCTL0 = 0xA500;                        // Write password to modify CS registers
+    CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
+    CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
+
+    int pwmPeriod = 12400;
+    TB1CCR0 = pwmPeriod;                         // PWM Period
+
+    TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
+    TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+    TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
+    P1DIR |= BIT0;
+    P1OUT |= BIT0;
+
     SetupAccel();
+
 
     while(1){
         //loop through x y z axis to get the values and store them in global variable
@@ -138,4 +153,12 @@ __interrupt void ADC10_ISR(void)
     default: break;
   }
 }
+
+#pragma vector = TIMER1_B1_VECTOR
+__interrupt void Timer_B (void)
+{
+  P1OUT ^= BIT0;
+  TB1CCTL1 &= ~CCIFG;
+}
+
 
