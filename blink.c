@@ -78,6 +78,7 @@ void TakeADCMeas(void)
 
 volatile unsigned int ADCResult = 0;
 int main(void){
+    WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
     SetupAccel();
     TakeADCMeas();
     while(1);
