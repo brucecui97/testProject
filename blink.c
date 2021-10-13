@@ -20,24 +20,11 @@
 
 void main(void)
 {
-    //--
-    //WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT
-    WDTCTL = WDTPW + WDTHOLD;
-    CSCTL0_H = 0xA5;
-    //1. Set up SMCLK to run on the DCO.
-    CSCTL2 = SELS_3;
-    //2. Configure the DCO to run at 8 MHz.
-    CSCTL1 = DCOFSEL_3;
-    //CSCTL1 &= ~BIT7; //want to do + DCORSEL_0 above but can't??
-    //3. Set up the SMCLK with a divider of 32
-    CSCTL3 = DIVS_5;
+    //1. Configure P2.7 to output high to power the accelerometer.
+    P2DIR |= BIT7;
+    P2OUT |= BIT7;
 
-    //4. Configure P3.4 as an output and set it to output the SMCLK. The SMCLK frequency should be ~250 kHz.
-    //Check it using an oscilloscope
-    P3DIR |= BIT4;
-    P3SEL1|=BIT4;
-    P3SEL0 |=BIT4;
-    //P3OUT &= ~BIT4;
+    //2. Set up the ADC to sample from ports A12, A13, and A14.
 
   while(1){
   }
