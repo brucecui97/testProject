@@ -85,11 +85,14 @@ void LEDToggle(unsigned char LEDn)
 volatile long temp;
 volatile long IntDegF;
 volatile long IntDegC;
+volatile unsigned char transmittedVal;
+volatile unsigned char testConstant;
 
 int main(void)
 {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
   LEDInit();
+  testConstant = 200;
   // Configure ADC10 - Pulse sample mode; ADC10SC trigger
   ADC10CTL0 = ADC10SHT_8 + ADC10ON;         // 16 ADC10CLKs; ADC ON,temperature sample period>30us
   ADC10CTL1 = ADC10SHP + ADC10CONSEQ_0;     // s/w trig, single ch/conv
@@ -126,7 +129,7 @@ int main(void)
 
   while(1)
   {
-    UCA0TXBUF = 'c';
+    UCA0TXBUF = testConstant;
     ADC10CTL0 |= ADC10ENC + ADC10SC;        // Sampling and conversion start
 
     __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
@@ -135,7 +138,8 @@ int main(void)
     // Temperature in Celsius
     // The temperature (Temp, ¡ãC)=
     IntDegC = (temp - CALADC10_15V_30C) *  (85-30)/(CALADC10_15V_85C-CALADC10_15V_30C) +30;
-    UCA0TXBUF = temp;
+    transmittedVal = (unsigned char) temp>>2;
+    UCA0TXBUF = transmittedVal;
     // Temperature in Fahrenheit
     // Tf = (9/5)*Tc + 32
     IntDegF = 9*IntDegC/5+32;
