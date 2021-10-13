@@ -146,27 +146,28 @@ int main(void)
     IntDegF = 9*IntDegC/5+32;
 
     LEDInit();
-    int roomTemp = 516;
-    if (temp>=roomTemp){
+    int roomTemp = 493;
+    int increment = 4;
+    if (temp<=roomTemp){
         LEDOn(1);
         LEDOn(2);
     }
-    if (temp>=roomTemp+1){
+    if (temp<=roomTemp-1*increment){
         LEDOn(3);
     }
-    if (temp>=roomTemp+2){
+    if (temp<=roomTemp-2*increment){
         LEDOn(4);
     }
-    if (temp>=roomTemp+3){
+    if (temp<=roomTemp-3*increment){
         LEDOn(5);
     }
-    if (temp>=roomTemp+4){
+    if (temp<=roomTemp-4*increment){
         LEDOn(6);
     }
-    if (temp>=roomTemp+5){
+    if (temp<=roomTemp-5*increment){
         LEDOn(7);
     }
-    if (temp>=roomTemp+6){
+    if (temp<=roomTemp-6*increment){
         LEDOn(8);
     }
     __no_operation();                       // SET BREAKPOINT HERE
