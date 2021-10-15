@@ -105,7 +105,8 @@ int main(void)
 
     while (1)
     {
-
+        UCA0TXBUF = '\n';
+        __delay_cycles(100000);
     }
 
     return 0;
