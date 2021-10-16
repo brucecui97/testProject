@@ -20,6 +20,7 @@
 #include <cQueue.h>
 
 #define IMPLEMENTATION  FIFO
+#define MAXSIZE  10
 
 
 typedef struct strRec {
@@ -41,7 +42,7 @@ volatile Rec myRec;
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-    q_init(&q, sizeof(Rec), 50, IMPLEMENTATION, false);
+    q_init(&q, sizeof(Rec), MAXSIZE, IMPLEMENTATION, false);
 }
 
 // the loop function runs over and over again forever
@@ -80,8 +81,9 @@ int main(void) {
     }
 
     while(1){
-        UCA0TXBUF = q.cnt;
-        __delay_cycles(2000000);
+        //UCA0TXBUF = q.cnt;
+        //UCA0TXBUF = '!';
+        //__delay_cycles(2000000);
     }
 }
 
@@ -92,13 +94,25 @@ __interrupt void USCI_A0_ISR(void)
     RxByte = UCA0RXBUF;
 
     if (RxByte == 'b'){
-        q_pop(&q, &myRec);
-        UCA0TXBUF = myRec.entry1;
+        if (q.cnt == 0){
+            UCA0TXBUF = '!';
+        }
+        else{
+            q_pop(&q, &myRec);
+            UCA0TXBUF = myRec.entry1;
+        }
+
 
     }
+
     else{
+        if (q.cnt<MAXSIZE){
         while ((UCA0IFG & UCTXIFG)==0);
         q_push(&q, &RxByte);
+        }
+        else{
+            UCA0TXBUF = '!';
+        }
     }
 
 
