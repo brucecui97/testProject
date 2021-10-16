@@ -18,6 +18,14 @@
 
 #include "msp430fr5739.h"
 #include "cQueue.h"
+#define IMPLEMENTATION  FIFO
+
+typedef struct myByte {
+    unsigned int myInt;
+} myByte;
+
+Queue_t     q;  // Queue declaration
+
 
 #define LED1 BIT0
 #define LED2 BIT1
