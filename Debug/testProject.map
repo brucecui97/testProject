@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Sat Oct 16 14:00:55 2021
+>> Linked Sat Oct 16 14:43:59 2021
 
 OUTPUT FILE NAME:   <testProject.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000c8f4
+ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000cc5c
 
 
 MEMORY CONFIGURATION
@@ -16,8 +16,8 @@ MEMORY CONFIGURATION
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00000400  000000a8  00000358  RWIX
-  FRAM                  0000c200   00003d80  00000742  0000363e  RWIX
+  RAM                   00001c00   00000400  000000de  00000322  RWIX
+  FRAM                  0000c200   00003d80  00000b24  0000325c  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -84,6 +84,12 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
+.data      0    00001c00    00000022     UNINITIALIZED
+                  00001c00    00000018     blink.obj (.data:tab)
+                  00001c18    00000004     rts430x_lc_sd_eabi.lib : _lock.c.obj (.data:_lock)
+                  00001c1c    00000004                            : _lock.c.obj (.data:_unlock)
+                  00001c20    00000002                            : memory.c.obj (.data)
+
 .TI.persistent 
 *          0    0000c200    00000000     UNINITIALIZED
 
@@ -93,46 +99,60 @@ section   page    origin      length       input sections
                   0000c200    00000008     rts430x_lc_sd_eabi.lib : memory.c.obj (.sysmem) [fill = 0]
                   0000c208    00000098     --HOLE-- [fill = 0]
 
-.cinit     0    0000c400    0000001e     
-                  0000c400    0000000d     (.cinit..data.load) [load image, compression = lzss]
-                  0000c40d    00000001     --HOLE-- [fill = 0]
-                  0000c40e    00000008     (__TI_handler_table)
-                  0000c416    00000008     (__TI_cinit_table)
+.cinit     0    0000c400    0000004c     
+                  0000c400    00000028     (.cinit..data.load) [load image]
+                  0000c42a    0000000c     (__TI_handler_table)
+                  0000c436    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  0000c43c    00000010     (__TI_cinit_table)
 
-.pinit     0    0000c41e    00000000     UNINITIALIZED
+.pinit     0    0000c44c    00000000     UNINITIALIZED
 
-.binit     0    0000c41e    00000000     
+.binit     0    0000c44c    00000000     
 
 .init_array 
-*          0    0000c41e    00000000     UNINITIALIZED
+*          0    0000c44c    00000000     UNINITIALIZED
 
 .mspabi.exidx 
-*          0    0000c41e    00000000     UNINITIALIZED
+*          0    0000c44c    00000000     UNINITIALIZED
 
 .mspabi.extab 
-*          0    0000c41e    00000000     UNINITIALIZED
+*          0    0000c44c    00000000     UNINITIALIZED
 
-.const     0    0000c41e    00000000     UNINITIALIZED
+.const     0    0000c44c    00000000     UNINITIALIZED
 
-.text      0    0000c600    00000342     
-                  0000c600    000000ee     rts430x_lc_sd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  0000c6ee    0000006a                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
-                  0000c758    0000005a     blink.obj (.text:main)
-                  0000c7b2    0000004c     blink.obj (.text:_isr:USCI_A0_ISR)
-                  0000c7fe    00000040     rts430x_lc_sd_eabi.lib : cpy_util.asm.obj (.text:__memcpy_far)
-                  0000c83e    0000003c                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
-                  0000c87a    0000002c     blink.obj (.text:LEDOff)
-                  0000c8a6    0000002c     blink.obj (.text:LEDOn)
-                  0000c8d2    00000022     MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib : mpu_init_fr57xx.obj (.text:__mpu_init)
-                  0000c8f4    00000020     rts430x_lc_sd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs_mpu)
-                  0000c914    0000001a     blink.obj (.text:LEDInit)
-                  0000c92e    00000008     rts430x_lc_sd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000c936    00000006                            : exit.c.obj (.text:abort)
-                  0000c93c    00000004                            : pre_init.c.obj (.text:_system_pre_init)
-                  0000c940    00000002                            : startup.c.obj (.text:_system_post_cinit)
+.text      0    0000c600    00000724     
+                  0000c600    000000f0     rts430x_lc_sd_eabi.lib : memory.c.obj (.text:aligned_alloc)
+                  0000c6f0    000000ee                            : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  0000c7de    000000d2                            : memory.c.obj (.text:free)
+                  0000c8b0    00000094     cQueue.obj (.text:q_pop)
+                  0000c944    0000008c     cQueue.obj (.text:q_push)
+                  0000c9d0    0000006a     rts430x_lc_sd_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
+                  0000ca3a    00000068                            : memory.c.obj (.text:split)
+                  0000caa2    0000005e     cQueue.obj (.text:q_init)
+                  0000cb00    00000058     blink.obj (.text:main)
+                  0000cb58    00000040     rts430x_lc_sd_eabi.lib : cpy_util.asm.obj (.text:__memcpy_far)
+                  0000cb98    0000003e                            : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset:__TI_zero_init_nomemset)
+                  0000cbd6    0000003c                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  0000cc12    00000028                            : memory.c.obj (.text:free_list_insert)
+                  0000cc3a    00000022     MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib : mpu_init_fr57xx.obj (.text:__mpu_init)
+                  0000cc5c    00000020     rts430x_lc_sd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs_mpu)
+                  0000cc7c    0000001c                            : memory.c.obj (.text:free_list_remove)
+                  0000cc98    0000001c     cQueue.obj (.text:q_kill)
+                  0000ccb4    0000001a     blink.obj (.text:setup)
+                  0000ccce    00000018     rts430x_lc_sd_eabi.lib : mult16_f5hw.asm.obj (.text)
+                  0000cce6    00000012                            : memcpy.c.obj (.text:memcpy)
+                  0000ccf8    0000000e     cQueue.obj (.text:q_flush)
+                  0000cd06    00000008     rts430x_lc_sd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  0000cd0e    00000008                            : memory.c.obj (.text:malloc)
+                  0000cd16    00000006                            : exit.c.obj (.text:abort)
+                  0000cd1c    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  0000cd20    00000002                            : _lock.c.obj (.text:_nop)
+                  0000cd22    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
-.data      0    00001c00    00000008     UNINITIALIZED
-                  00001c00    00000008     blink.obj (.data:leds)
+.bss       0    00001c22    0000001c     UNINITIALIZED
+                  00001c22    00000016     (.common:q)
+                  00001c38    00000004     (.common:myRec)
+                  00001c3c    00000002     rts430x_lc_sd_eabi.lib : memory.c.obj (.bss)
 
 .stack     0    00001f60    000000a0     UNINITIALIZED
                   00001f60    00000002     rts430x_lc_sd_eabi.lib : boot.c.obj (.stack)
@@ -198,7 +218,7 @@ USCI_B0    0    0000ffee    00000002
                   0000ffee    00000002     rts430x_lc_sd_eabi.lib : int47.asm.obj (.int47)
 
 USCI_A0    0    0000fff0    00000002     
-                  0000fff0    00000002     blink.obj (.int48)
+                  0000fff0    00000002     rts430x_lc_sd_eabi.lib : int48.asm.obj (.int48)
 
 WDT        0    0000fff2    00000002     
                   0000fff2    00000002     rts430x_lc_sd_eabi.lib : int49.asm.obj (.int49)
@@ -237,9 +257,10 @@ MODULE SUMMARY
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
     .\
-       blink.obj                    280    2         8      
+       cQueue.obj                   424    0         0      
+       blink.obj                    114    0         50     
     +--+----------------------------+------+---------+---------+
-       Total:                       280    2         8      
+       Total:                       538    0         50     
                                                             
     D:\ccs\ccs_base\msp430\lib\FR57xx\MPU_INIT_FR57XX_LIB_CCS_msp430_large_code_small_data.lib
        mpu_init_fr57xx.obj          34     0         0      
@@ -247,11 +268,16 @@ MODULE SUMMARY
        Total:                       34     0         0      
                                                             
     D:\ccs\tools\compiler\ti-cgt-msp430_20.2.5.LTS\lib\rts430x_lc_sd_eabi.lib
+       memory.c.obj                 630    0         4      
        copy_decompress_lzss.c.obj   238    0         0      
        autoinit.c.obj               106    0         0      
        cpy_util.asm.obj             64     0         0      
+       copy_zero_init.c.obj         62     0         0      
        copy_decompress_none.c.obj   60     0         0      
        boot.c.obj                   32     2         0      
+       mult16_f5hw.asm.obj          24     0         0      
+       memcpy.c.obj                 18     0         0      
+       _lock.c.obj                  2      0         8      
        isr_trap.asm.obj             8      0         0      
        exit.c.obj                   6      0         0      
        pre_init.c.obj               4      0         0      
@@ -272,6 +298,7 @@ MODULE SUMMARY
        int45.asm.obj                0      2         0      
        int46.asm.obj                0      2         0      
        int47.asm.obj                0      2         0      
+       int48.asm.obj                0      2         0      
        int49.asm.obj                0      2         0      
        int50.asm.obj                0      2         0      
        int51.asm.obj                0      2         0      
@@ -280,26 +307,28 @@ MODULE SUMMARY
        int54.asm.obj                0      2         0      
        startup.c.obj                2      0         0      
     +--+----------------------------+------+---------+---------+
-       Total:                       520    48        0      
+       Total:                       1256   50        12     
                                                             
        Heap:                        0      0         160    
        Stack:                       0      0         160    
-       Linker Generated:            0      29        0      
+       Linker Generated:            0      74        0      
     +--+----------------------------+------+---------+---------+
-       Grand Total:                 834    79        328    
+       Grand Total:                 1828   124       382    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000c416 records: 1, size/record: 8, table size: 8
-	.data: load addr=0000c400, load size=0000000d bytes, run addr=00001c00, run size=00000008 bytes, compression=lzss
+__TI_cinit_table @ 0000c43c records: 2, size/record: 8, table size: 16
+	.data: load addr=0000c400, load size=00000028 bytes, run addr=00001c00, run size=00000022 bytes, compression=copy
+	.bss: load addr=0000c436, load size=00000006 bytes, run addr=00001c22, run size=0000001c bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 0000c40e records: 2, size/record: 4, table size: 8
-	index: 0, handler: __TI_decompress_lzss
-	index: 1, handler: __TI_decompress_none
+__TI_handler_table @ 0000c42a records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_zero_init
+	index: 1, handler: __TI_decompress_lzss
+	index: 2, handler: __TI_decompress_none
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -338,7 +367,7 @@ address   name
 00000712  ADC10MEM0_L                            
 000004be  BCD2BIN                                
 000004bc  BIN2BCD                                
-0000c936  C$$EXIT                                
+0000cd16  C$$EXIT                                
 000008c0  CDCTL0                                 
 000008c1  CDCTL0_H                               
 000008c0  CDCTL0_L                               
@@ -429,9 +458,6 @@ address   name
 00000146  GCCTL1                                 
 00000147  GCCTL1_H                               
 00000146  GCCTL1_L                               
-0000c914  LEDInit                                
-0000c87a  LEDOff                                 
-0000c8a6  LEDOn                                  
 000004c4  MAC                                    
 000004da  MAC32H                                 
 000004db  MAC32H_H                               
@@ -845,21 +871,20 @@ address   name
 0000064e  UCB0TXBUF                              
 0000064f  UCB0TXBUF_H                            
 0000064e  UCB0TXBUF_L                            
-0000c7b2  USCI_A0_ISR                            
 0000015c  WDTCTL                                 
 0000015d  WDTCTL_H                               
 0000015c  WDTCTL_L                               
 00002000  __STACK_END                            
 000000a0  __STACK_SIZE                           
 000000a0  __SYSMEM_SIZE                          
-0000c416  __TI_CINIT_Base                        
-0000c41e  __TI_CINIT_Limit                       
-0000c40e  __TI_Handler_Table_Base                
-0000c416  __TI_Handler_Table_Limit               
-0000c92e  __TI_ISR_TRAP                          
-0000c6ee  __TI_auto_init_nobinit_nopinit_hold_wdt
-0000c600  __TI_decompress_lzss                   
-0000c83e  __TI_decompress_none                   
+0000c43c  __TI_CINIT_Base                        
+0000c44c  __TI_CINIT_Limit                       
+0000c42a  __TI_Handler_Table_Base                
+0000c436  __TI_Handler_Table_Limit               
+0000cd06  __TI_ISR_TRAP                          
+0000c9d0  __TI_auto_init_nobinit_nopinit_hold_wdt
+0000c6f0  __TI_decompress_lzss                   
+0000cbd6  __TI_decompress_none                   
 0000ffce  __TI_int31                             
 0000ffd0  __TI_int32                             
 0000ffd2  __TI_int33                             
@@ -887,25 +912,43 @@ address   name
 ffffffff  __TI_pprof_out_hndl                    
 ffffffff  __TI_prof_data_size                    
 ffffffff  __TI_prof_data_start                   
+0000cb98  __TI_zero_init_nomemset                
 ffffffff  __c_args__                             
-0000c7fe  __memcpy_far                           
-0000c8d2  __mpu_init                             
+0000cb58  __memcpy_far                           
+0000cc3a  __mpu_init                             
 00007513  __mpusam                               
 00000302  __mpuseg                               
-0000c8f4  _c_int00_noargs_mpu                    
+0000ccce  __mspabi_mpyi_f5hw                     
+0000cc5c  _c_int00_noargs_mpu                    
+00001c18  _lock                                  
+0000cd20  _nop                                   
 0000fffe  _reset_vector                          
 00001f60  _stack                                 
 0000c200  _sys_memory                            
-0000c940  _system_post_cinit                     
-0000c93c  _system_pre_init                       
-0000c936  abort                                  
+0000cd22  _system_post_cinit                     
+0000cd1c  _system_pre_init                       
+00001c1c  _unlock                                
+0000cd16  abort                                  
+0000c600  aligned_alloc                          
 0000c400  fram_ro_start                          
 0000c200  fram_rw_start                          
 0000c600  fram_rx_start                          
-00001c00  leds                                   
-0000c758  main                                   
+0000c7de  free                                   
+0000cb00  main                                   
+0000cd0e  malloc                                 
+0000c600  memalign                               
+0000cce6  memcpy                                 
 00000002  mpusb1                                 
 00000003  mpusb2                                 
+00001c38  myRec                                  
+00001c22  q                                      
+0000ccf8  q_flush                                
+0000caa2  q_init                                 
+0000cc98  q_kill                                 
+0000c8b0  q_pop                                  
+0000c944  q_push                                 
+0000ccb4  setup                                  
+00001c00  tab                                    
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1455,34 +1498,48 @@ address   name
 000008ce  CDIV                                   
 000008ce  CDIV_L                                 
 000008cf  CDIV_H                                 
-00001c00  leds                                   
+00001c00  tab                                    
+00001c18  _lock                                  
+00001c1c  _unlock                                
+00001c22  q                                      
+00001c38  myRec                                  
 00001f60  _stack                                 
 00002000  __STACK_END                            
 00007513  __mpusam                               
 0000c200  _sys_memory                            
 0000c200  fram_rw_start                          
 0000c400  fram_ro_start                          
-0000c40e  __TI_Handler_Table_Base                
-0000c416  __TI_CINIT_Base                        
-0000c416  __TI_Handler_Table_Limit               
-0000c41e  __TI_CINIT_Limit                       
-0000c600  __TI_decompress_lzss                   
+0000c42a  __TI_Handler_Table_Base                
+0000c436  __TI_Handler_Table_Limit               
+0000c43c  __TI_CINIT_Base                        
+0000c44c  __TI_CINIT_Limit                       
+0000c600  aligned_alloc                          
 0000c600  fram_rx_start                          
-0000c6ee  __TI_auto_init_nobinit_nopinit_hold_wdt
-0000c758  main                                   
-0000c7b2  USCI_A0_ISR                            
-0000c7fe  __memcpy_far                           
-0000c83e  __TI_decompress_none                   
-0000c87a  LEDOff                                 
-0000c8a6  LEDOn                                  
-0000c8d2  __mpu_init                             
-0000c8f4  _c_int00_noargs_mpu                    
-0000c914  LEDInit                                
-0000c92e  __TI_ISR_TRAP                          
-0000c936  C$$EXIT                                
-0000c936  abort                                  
-0000c93c  _system_pre_init                       
-0000c940  _system_post_cinit                     
+0000c600  memalign                               
+0000c6f0  __TI_decompress_lzss                   
+0000c7de  free                                   
+0000c8b0  q_pop                                  
+0000c944  q_push                                 
+0000c9d0  __TI_auto_init_nobinit_nopinit_hold_wdt
+0000caa2  q_init                                 
+0000cb00  main                                   
+0000cb58  __memcpy_far                           
+0000cb98  __TI_zero_init_nomemset                
+0000cbd6  __TI_decompress_none                   
+0000cc3a  __mpu_init                             
+0000cc5c  _c_int00_noargs_mpu                    
+0000cc98  q_kill                                 
+0000ccb4  setup                                  
+0000ccce  __mspabi_mpyi_f5hw                     
+0000cce6  memcpy                                 
+0000ccf8  q_flush                                
+0000cd06  __TI_ISR_TRAP                          
+0000cd0e  malloc                                 
+0000cd16  C$$EXIT                                
+0000cd16  abort                                  
+0000cd1c  _system_pre_init                       
+0000cd20  _nop                                   
+0000cd22  _system_post_cinit                     
 0000ffce  __TI_int31                             
 0000ffd0  __TI_int32                             
 0000ffd2  __TI_int33                             
@@ -1513,4 +1570,4 @@ ffffffff  __TI_prof_data_size
 ffffffff  __TI_prof_data_start                   
 ffffffff  __c_args__                             
 
-[600 symbols]
+[614 symbols]

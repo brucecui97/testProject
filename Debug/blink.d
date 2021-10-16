@@ -5,7 +5,7 @@ blink.obj: D:/ccs/ccs_base/msp430/include/msp430fr5739.h
 blink.obj: D:/ccs/ccs_base/msp430/include/in430.h
 blink.obj: D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h
 blink.obj: D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h
-blink.obj: ../cQueue.h
+blink.obj: D:/mech421/Lab2/testProject/cQueue.h
 blink.obj: D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/inttypes.h
 blink.obj: D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/_ti_config.h
 blink.obj: D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/linkage.h
@@ -28,7 +28,7 @@ D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h:
 
 D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h:
 
-../cQueue.h:
+D:/mech421/Lab2/testProject/cQueue.h:
 
 D:/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/inttypes.h:
 
