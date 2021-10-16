@@ -81,7 +81,7 @@ int main(void) {
 
     while(1){
         UCA0TXBUF = q.in;
-        __delay_cycles(100000);
+        __delay_cycles(2000000);
     }
 }
 
@@ -90,7 +90,17 @@ __interrupt void USCI_A0_ISR(void)
 {
     unsigned char RxByte;
     RxByte = UCA0RXBUF;
-    while ((UCA0IFG & UCTXIFG)==0);
-    q_push(&q, &RxByte);
+
+    if (RxByte == 'b'){
+        q_pop(&q, &myRec);
+        UCA0TXBUF = myRec.entry1;
+
+    }
+    else{
+        while ((UCA0IFG & UCTXIFG)==0);
+        q_push(&q, &RxByte);
+    }
+
+
 }
 
