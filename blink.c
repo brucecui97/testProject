@@ -81,6 +81,7 @@ int main(void) {
 
     while(1){
         UCA0TXBUF = q.in;
+        __delay_cycles(100000);
     }
 }
 
