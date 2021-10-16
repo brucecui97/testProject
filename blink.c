@@ -19,7 +19,7 @@
 #include "msp430fr5739.h"
 #include <cQueue.h>
 
-#define IMPLEMENTATION  LIFO
+#define IMPLEMENTATION  FIFO
 
 
 typedef struct strRec {
@@ -59,7 +59,6 @@ int main(void) {
 
     for (i = 0 ; i < sizeof(tab)/sizeof(Rec) ; i++)
     {
-        volatile Rec rec;
         q_pop(&q, &myRec);
     }
 
