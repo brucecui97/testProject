@@ -80,7 +80,7 @@ int main(void) {
     }
 
     while(1){
-        UCA0TXBUF = q.in;
+        UCA0TXBUF = q.cnt;
         __delay_cycles(2000000);
     }
 }
