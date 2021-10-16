@@ -48,6 +48,23 @@ void setup() {
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
     setup();
+
+    CSCTL0 = 0xA500;                        // Write password to modify CS registers
+    CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
+    CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
+
+    // Configure ports for UCA0
+    P2SEL0 &= ~(BIT0 + BIT1);
+    P2SEL1 |= BIT0 + BIT1;
+
+    // Configure UCA0
+    UCA0CTLW0 = UCSSEL0;
+    UCA0BRW = 52;
+    UCA0MCTLW = 0x4900 + UCOS16 + UCBRF0;
+    UCA0IE |= UCRXIE;
+    // global interrupt enable
+    _EINT();
+
     unsigned int i;
 
     for (i = 0 ; i < sizeof(tab)/sizeof(Rec) ; i++)
@@ -59,7 +76,10 @@ int main(void) {
     for (i = 0 ; i < sizeof(tab)/sizeof(Rec) ; i++)
     {
         q_pop(&q, &myRec);
+        UCA0TXBUF = myRec.entry1;
     }
 
-    while(1);
+    while(1){
+        UCA0TXBUF = 2;
+    }
 }
