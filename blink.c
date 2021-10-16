@@ -41,7 +41,7 @@ volatile Rec myRec;
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-    q_init(&q, sizeof(Rec), 10, IMPLEMENTATION, false);
+    q_init(&q, sizeof(Rec), 50, IMPLEMENTATION, false);
 }
 
 // the loop function runs over and over again forever
@@ -80,7 +80,7 @@ int main(void) {
     }
 
     while(1){
-        UCA0TXBUF = 2;
+        UCA0TXBUF = q.in;
     }
 }
 
