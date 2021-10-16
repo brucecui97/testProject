@@ -23,17 +23,16 @@
 
 
 typedef struct strRec {
-    uint16_t    entry1;
-    uint16_t    entry2;
+    uint8_t    entry1;
 } Rec;
 
 Rec tab[6] = {
-    { 0x1234, 0x3456 },
-    { 0x5678, 0x7890 },
-    { 0x90AB, 0xABCD },
-    { 0xCDEF, 0xEFDC },
-    { 0xDCBA, 0xBA09 },
-    { 0x0987, 0x8765 }
+    {1},
+    {2},
+    {3},
+    {4},
+    {5},
+    {6}
 };
 
 Queue_t     q;  // Queue declaration
