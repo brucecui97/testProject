@@ -17,57 +17,7 @@
 //***************************************************************************************
 
 #include "msp430fr5739.h"
-#include <stddef.h>
-
-typedef int data_type;
-struct queue_item {
-    data_type contents;
-    struct queue_item* next;
-};
-struct queue_root {
-    struct queue_item* head;
-    struct queue_item* tail;
-};
-
-void init_queue(struct queue_root* queue){
-    queue->head = queue->tail = NULL;
-}
-
-void push_queue(struct queue_root* queue, data_type contents){
-    struct queue_item *item = malloc(sizeof(item));
-    item->contents = contents;
-    item->next = NULL;
-    if (queue->head == NULL){
-        queue->head = queue->tail = item;
-    } else {
-        queue->tail = queue->tail->next = item;
-    }
-}
-
-data_type pop_queue(struct queue_root* queue){
-    data_type popped;
-    if (queue->head == NULL){
-        return NULL;
-    } else {
-        popped = queue->head->contents;
-        struct queue_item* next = queue->head->next;
-        free(queue->head);
-        queue->head = next;
-        if (queue->head == NULL)
-            queue->tail = NULL;
-    }
-    return popped;
-}
-
-void process_queue(struct queue_root* queue, void (*func)(data_type)){
-    if (queue == NULL)
-        return;
-    struct queue_item* current = queue->head;
-    while (current != NULL){
-        func(current->contents);
-        current = current->next;
-    }
-}
+#include "cQueue.h"
 
 #define LED1 BIT0
 #define LED2 BIT1
@@ -133,7 +83,14 @@ void LEDToggle(unsigned char LEDn)
  */
 int main(void)
 {
+    //struct point *p = &my_point;  /* p is a pointer to my_point */
+
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
+
+
+
+    //myQueue = newQueue(50);
+
     LEDInit();
     // Configure clocks
     CSCTL0 = 0xA500;                        // Write password to modify CS registers

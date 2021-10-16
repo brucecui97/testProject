@@ -11,6 +11,7 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./blink.obj" \
+"./cQueue.obj" \
 "../lnk_msp430fr5739.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmpu_init_fr57xx.a \
@@ -156,8 +157,8 @@ testProject.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "blink.obj" 
-	-$(RM) "blink.d" 
+	-$(RM) "blink.obj" "cQueue.obj" 
+	-$(RM) "blink.d" "cQueue.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
