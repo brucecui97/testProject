@@ -83,3 +83,13 @@ int main(void) {
         UCA0TXBUF = 2;
     }
 }
+
+#pragma vector = USCI_A0_VECTOR
+__interrupt void USCI_A0_ISR(void)
+{
+    unsigned char RxByte;
+    RxByte = UCA0RXBUF;
+    while ((UCA0IFG & UCTXIFG)==0);
+    q_push(&q, &RxByte);
+}
+
