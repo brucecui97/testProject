@@ -92,15 +92,22 @@ int main(void) {
 
     while(1){
         Rec tempRec;
+        if(q_peek(&q, &tempRec) && tempRec.entry1==START_BYTE && q.cnt>=5){
 
-        if(q_pop(&q, &tempRec)){
-            if(tempRec.entry1==START_BYTE){
+            q_pop(&q, &tempRec);
+            commandByte = tempRec.entry1;
 
-            }
+            q_pop(&q, &tempRec);
+            dataByte1 = tempRec.entry1;
+
+            q_pop(&q, &tempRec);
+            dataByte2 = tempRec.entry1;
+
+            q_pop(&q, &tempRec);
+            escapeByte = tempRec.entry1;
+
         }
-        //UCA0TXBUF = q.cnt;
-        //UCA0TXBUF = '!';
-        //__delay_cycles(2000000);
+
     }
 }
 
