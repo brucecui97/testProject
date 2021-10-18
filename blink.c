@@ -45,6 +45,14 @@ void setup() {
     q_init(&q, sizeof(Rec), MAXSIZE, IMPLEMENTATION, false);
 }
 
+
+void sendError(const char *str){
+    while(*str!= '\0'){
+        while ((UCA0IFG & UCTXIFG)==0);
+        UCA0TXBUF = *str;
+        str++;
+    }
+}
 // the loop function runs over and over again forever
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
@@ -96,14 +104,12 @@ __interrupt void USCI_A0_ISR(void)
 
     if (RxByte == 13){
         if (q.cnt == 0){
-            UCA0TXBUF = '!';
+            sendError(",underflow");
         }
         else{
             q_pop(&q, &myRec);
             UCA0TXBUF = myRec.entry1;
         }
-
-
     }
 
     else{
@@ -112,7 +118,7 @@ __interrupt void USCI_A0_ISR(void)
         q_push(&q, &RxByte);
         }
         else{
-            UCA0TXBUF = '!';
+            sendError(",overflow");
         }
     }
 
