@@ -94,6 +94,8 @@ int main(void) {
         Rec tempRec;
         if(q_peek(&q, &tempRec) && tempRec.entry1==START_BYTE && q.cnt>=5){
 
+            q_pop(&q, &tempRec);//pop start Byte
+
             q_pop(&q, &tempRec);
             commandByte = tempRec.entry1;
 
