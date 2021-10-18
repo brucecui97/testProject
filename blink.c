@@ -47,6 +47,8 @@ volatile char dataByte2;
 volatile char escapeByte;
 volatile uint16_t finalData;
 volatile enum NextByteType nextByteType = UNKNOWN;
+volatile int temp123;
+volatile uint64_t  frequencyDesiredSet = 1000000;
 
 
 
@@ -69,30 +71,41 @@ int main(void) {
     P2SEL0 &= ~(BIT0 + BIT1);
     P2SEL1 |= BIT0 + BIT1;
 
+       P3DIR |= BIT4 + BIT5;                       // P3.4 and P3.5 output
+       P3SEL0 |= BIT4 + BIT5;                      // P3.4 and P3.5
+
+       int desiredFrequency = 5000;
+//
+//       temp123 = frequencyDesiredSet/desiredFrequency;
+
+
+       int pwmPeriod = frequencyDesiredSet/desiredFrequency; //set to 1mhz/desiredFrequency
+       TB1CCR0 = pwmPeriod;                         // PWM Period
+
+       TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
+       TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+
+       TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
+       TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
+
+       TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
+
+
+
+
+
     // Configure UCA0
     UCA0CTLW0 = UCSSEL0;
     UCA0BRW = 52;
     UCA0MCTLW = 0x4900 + UCOS16 + UCBRF0;
     UCA0IE |= UCRXIE;
+
     // global interrupt enable
     _EINT();
 
-    unsigned int i;
-
-    for (i = 0 ; i < sizeof(tab)/sizeof(Rec) ; i++)
-    {
-        Rec rec = tab[i];
-        q_push(&q, &rec);
-    }
-
-    for (i = 0 ; i < sizeof(tab)/sizeof(Rec) ; i++)
-    {
-        q_pop(&q, &myRec);
-        UCA0TXBUF = myRec.entry1;
-    }
-
     while(1){
         Rec tempRec;
+        q_peek(&q, &tempRec);
         if(q_peek(&q, &tempRec) && tempRec.entry1==START_BYTE && q.cnt>=5){
 
             q_pop(&q, &tempRec);//pop start Byte
@@ -120,6 +133,18 @@ int main(void) {
                 dataByte2 = 255;
             }
             finalData = (dataByte1 << 8) | (dataByte2 & 0xff);
+
+           int desiredFrequency = finalData;
+
+           int pwmPeriod = frequencyDesiredSet/desiredFrequency; //set to 1mhz/desiredFrequency
+
+           TB1CCR0 = pwmPeriod;                         // PWM Period
+
+           TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
+           TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+
+           TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
+           TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
         }
 
     }
