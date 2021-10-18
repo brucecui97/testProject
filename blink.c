@@ -67,6 +67,12 @@ int main(void) {
     CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
     CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
 
+    //cofigure LED
+
+    //first four bits
+    PJDIR |= BIT0;
+    //Leds Off
+    PJOUT &= ~BIT0;
     // Configure ports for UCA0
     P2SEL0 &= ~(BIT0 + BIT1);
     P2SEL1 |= BIT0 + BIT1;
@@ -137,6 +143,14 @@ int main(void) {
 
            TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
            TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+
+           //do commands
+           if (commandByte == 2){
+              PJOUT|=BIT0;
+           }
+           else if (commandByte == 3){
+               PJOUT&= ~BIT0;
+           }
 
         }
 
