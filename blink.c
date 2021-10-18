@@ -37,14 +37,17 @@ Rec tab[6] = {
     {6}
 };
 
+enum NextByteType{START, COMMAND, DATA1, DATA2, ESCAPE, UNKNOWN};
+
 Queue_t     q;  // Queue declaration
 volatile Rec myRec;
 volatile char commandByte;
 volatile char dataByte1;
 volatile char dataByte2;
 volatile char escapeByte;
+volatile enum NextByteType nextByteType = UNKNOWN;
 
-enum nextByteType{START, COMMAND, DATA1, DATA2, ESCAPE};
+
 
 // the setup function runs once when you press reset or power the board
 void setup() {
