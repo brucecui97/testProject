@@ -21,6 +21,7 @@
 
 #define IMPLEMENTATION  FIFO
 #define MAXSIZE  10
+#define START_BYTE  255
 
 
 typedef struct strRec {
@@ -38,6 +39,12 @@ Rec tab[6] = {
 
 Queue_t     q;  // Queue declaration
 volatile Rec myRec;
+volatile char commandByte;
+volatile char dataByte1;
+volatile char dataByte2;
+volatile char escapeByte;
+
+enum nextByteType{START, COMMAND, DATA1, DATA2, ESCAPE};
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -81,7 +88,13 @@ int main(void) {
     }
 
     while(1){
+        Rec tempRec;
 
+        if(q_pop(&q, &tempRec)){
+            if(tempRec.entry1==START_BYTE){
+
+            }
+        }
         //UCA0TXBUF = q.cnt;
         //UCA0TXBUF = '!';
         //__delay_cycles(2000000);
@@ -91,6 +104,7 @@ int main(void) {
 #pragma vector = USCI_A0_VECTOR
 __interrupt void USCI_A0_ISR(void)
 {
+
     unsigned char RxByte;
     RxByte = UCA0RXBUF;
 
@@ -115,7 +129,5 @@ __interrupt void USCI_A0_ISR(void)
             UCA0TXBUF = '!';
         }
     }
-
-
 }
 
