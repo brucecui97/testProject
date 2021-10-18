@@ -81,6 +81,7 @@ int main(void) {
     }
 
     while(1){
+
         //UCA0TXBUF = q.cnt;
         //UCA0TXBUF = '!';
         //__delay_cycles(2000000);
@@ -93,7 +94,7 @@ __interrupt void USCI_A0_ISR(void)
     unsigned char RxByte;
     RxByte = UCA0RXBUF;
 
-    if (RxByte == 'b'){
+    if (RxByte == 13){
         if (q.cnt == 0){
             UCA0TXBUF = '!';
         }
