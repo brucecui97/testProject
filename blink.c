@@ -71,13 +71,10 @@ int main(void) {
     P2SEL0 &= ~(BIT0 + BIT1);
     P2SEL1 |= BIT0 + BIT1;
 
-       P3DIR |= BIT4 + BIT5;                       // P3.4 and P3.5 output
-       P3SEL0 |= BIT4 + BIT5;                      // P3.4 and P3.5
+       P3DIR |= BIT4;                       // P3.4
+       P3SEL0 |= BIT4;                      // P3.4
 
        int desiredFrequency = 5000;
-//
-//       temp123 = frequencyDesiredSet/desiredFrequency;
-
 
        int pwmPeriod = frequencyDesiredSet/desiredFrequency; //set to 1mhz/desiredFrequency
        TB1CCR0 = pwmPeriod;                         // PWM Period
@@ -85,8 +82,6 @@ int main(void) {
        TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
        TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
 
-       TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
-       TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
 
        TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
@@ -143,8 +138,6 @@ int main(void) {
            TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
            TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
 
-           TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
-           TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
         }
 
     }
