@@ -45,6 +45,7 @@ volatile char commandByte;
 volatile char dataByte1;
 volatile char dataByte2;
 volatile char escapeByte;
+volatile uint16_t finalData;
 volatile enum NextByteType nextByteType = UNKNOWN;
 
 
@@ -118,7 +119,7 @@ int main(void) {
                 dataByte1 = 255;
                 dataByte2 = 255;
             }
-
+            finalData = (dataByte1 << 8) | (dataByte2 & 0xff);
         }
 
     }
