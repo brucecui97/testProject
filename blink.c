@@ -108,6 +108,17 @@ int main(void) {
             q_pop(&q, &tempRec);
             escapeByte = tempRec.entry1;
 
+            if (escapeByte == 1){
+                dataByte2 = 255;
+            }
+            else if (escapeByte == 2){
+                dataByte1 = 255;
+            }
+            else if (escapeByte == 3){
+                dataByte1 = 255;
+                dataByte2 = 255;
+            }
+
         }
 
     }
