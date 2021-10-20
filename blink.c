@@ -154,7 +154,7 @@ int main(void){
     CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
     CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
 
-    int pwmPeriod = 10000;
+    int pwmPeriod = 20000;
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
@@ -240,7 +240,7 @@ __interrupt void Timer_B (void)
 {
   TB1CCTL1 &= ~CCIFG;
   if (currState == UNKNOWN_ACC){
-      UCA0TXBUF = 255;
+      UCA0TXBUF = x_acc;
       currState = X_ACC;
   }
   else if (currState == X_ACC){
@@ -248,12 +248,12 @@ __interrupt void Timer_B (void)
       currState = Y_ACC;
   }
   else if (currState == Y_ACC){
-      UCA0TXBUF = y_acc;
+      UCA0TXBUF = x_acc;
       currState = Z_ACC;
 
   }
   else if (currState == Z_ACC){
-      UCA0TXBUF = z_acc;
+      UCA0TXBUF = x_acc;
       currState = UNKNOWN_ACC;
 
   }
