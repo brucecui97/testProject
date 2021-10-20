@@ -154,7 +154,7 @@ int main(void){
     CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
     CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
 
-    int pwmPeriod = 12400;
+    int pwmPeriod = 10000;
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
