@@ -81,6 +81,7 @@ void LEDToggle(unsigned char LEDn)
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+    LEDInit();
     CSCTL0_H = 0xA5;
     CSCTL1 |= DCOFSEL0 + DCOFSEL1;             // Set max. DCO setting =8MHz
     CSCTL2 = SELA_3 + SELS_3 + SELM_3;        // set ACLK = SMCLK = DCO/8
@@ -102,7 +103,27 @@ void main(void)
 
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
 
+    //1. Configure P4.0 as a digital input.
+    P4DIR &= ~BIT0;
+
+    //2. The switch S1 is connected to P4.0 on the EXP Board. Enable the internal pull-up resistors for the switch.
+    P4REN |= BIT0;
+    P4OUT |= BIT0;
+
+    //3. Set P4.0 to get interrupted from a rising edge (i.e. an interrupt occurs when the user lets go of the button).
+    //Enable local and global interrupts.
+    P4IES &=~BIT0;
+
+    P4IE |= BIT0; //enable p4.1 IRQ
+    __enable_interrupt();
+    P4IFG &= ~BIT0;//Clear P4.0 IRQ Flag
+
     __bis_SR_register(LPM0_bits);             // Enter LPM0
     __no_operation();                         // For debugger
   }
 
+#pragma vector = PORT4_VECTOR
+__interrupt void ISR_Port4_S0(void){
+    LEDToggle(8);
+    P4IFG &= ~BIT0;//Clear P4.0 IRQ Flag
+}
