@@ -154,6 +154,10 @@ int main(void) {
 
         }
 
+        else if (tempRec.entry1!=START_BYTE){
+            q_pop(&q, &tempRec);
+        }
+
     }
 }
 
