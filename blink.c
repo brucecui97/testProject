@@ -131,6 +131,7 @@ volatile unsigned int y_acc = 0;
 volatile unsigned int z_acc = 0;
 volatile unsigned int currState = UNKNOWN_ACC;
 volatile avgXAcc = 0;
+volatile int pwmPeriod = 20000;
 void SetupAccel(void)
 {
   //Setup  accelerometer
@@ -177,7 +178,7 @@ int main(void){
     P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
        P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
 
-    int pwmPeriod = 20000;
+
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
@@ -304,8 +305,16 @@ __interrupt void Timer_B (void)
 
       avgXAcc = sum/MAXSIZE;
 
+      if (avgXAcc-2<NEUTRALACC){
+          TB1CCR1 = 0;
+      }
+      else{
+      TB1CCR1 = pwmPeriod/(155-avgXAcc);
+      }
+
+
   }
-  LEDToggle(8);
+  //LEDToggle(8);
 }
 
 
