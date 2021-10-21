@@ -129,6 +129,7 @@ volatile unsigned int x_acc = 0;
 volatile unsigned int y_acc = 0;
 volatile unsigned int z_acc = 0;
 volatile unsigned int currState = UNKNOWN_ACC;
+volatile avgXAcc = 0;
 void SetupAccel(void)
 {
   //Setup  accelerometer
@@ -279,12 +280,27 @@ __interrupt void Timer_B (void)
 
 
   }
-          Rec garbageRec;
-         if (q.cnt>=MAXSIZE){
-             q_pop(&q, &garbageRec);
-         }
-         uint8_t tempXacc = x_acc;
-         q_push(&q, &tempXacc);
+
+  Rec garbageRec;
+ if (q.cnt>=MAXSIZE){
+     q_pop(&q, &garbageRec);
+ }
+ uint8_t tempXacc = x_acc;
+ q_push(&q, &tempXacc);
+
+  if (q.cnt>=MAXSIZE){
+
+      int sum = 0;
+      int i;
+      for (i =0; i<MAXSIZE;i++){
+          Rec tempRecForSum;
+          q_pop(&q, &tempRecForSum);
+          sum = sum+tempRecForSum.entry1;
+      }
+
+      avgXAcc = sum/MAXSIZE;
+
+  }
   LEDToggle(5);
 }
 
