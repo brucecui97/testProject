@@ -80,6 +80,7 @@ void LEDToggle(unsigned char LEDn)
 
 
 volatile int currentDivisor = 8;
+volatile int pwmPeriod = 10000;
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -94,11 +95,11 @@ void main(void)
 
 
 
-    int pwmPeriod = 1992;
+
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
-    TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+    TB1CCR1 = pwmPeriod/8;                            // CCR1 PWM duty cycle
 
 //    TB1CCTL2 = OUTMOD_7;                      // CCR1 reset/set
 //    TB1CCR2 = pwmPeriod*1/4;                            // CCR1 PWM duty cycle
@@ -114,8 +115,9 @@ void main(void)
 
     //3. Set P4.0 to get interrupted from a rising edge (i.e. an interrupt occurs when the user lets go of the button).
     //Enable local and global interrupts.
-    P4IES &=~BIT0;
-    P4IES &=~BIT1;
+    //P4IES &=~BIT0;
+    //P4IES &=~BIT1;
+    P4IES |=BIT0 + BIT1;
 
     P4IE |= BIT0 + BIT1; //enable p4.1 IRQ
     __enable_interrupt();
@@ -128,14 +130,25 @@ void main(void)
 
 #pragma vector = PORT4_VECTOR
 __interrupt void ISR_Port4_S0(void){
-    LEDToggle(8);
+    //LEDToggle(8);
 
     if ((P4IFG&BIT0)==BIT0){
         //go high
+        if(currentDivisor>1){
+            currentDivisor = currentDivisor -1;
+        }
+        TB1CCR1 = pwmPeriod/currentDivisor;
         P4IFG &= ~BIT0;//Clear P4.0 IRQ Flag
     }
     else{
+        if(currentDivisor<8){
+            currentDivisor = currentDivisor+1;
+            TB1CCR1 = pwmPeriod/currentDivisor;
+                }
         //go low
+        else if (currentDivisor==8){
+            TB1CCR1 = 0;
+        }
         P4IFG &= ~BIT1;//Clear P4.0 IRQ Flag
     }
 }
