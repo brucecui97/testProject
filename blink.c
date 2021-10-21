@@ -181,7 +181,7 @@ int main(void){
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
-    TB1CCR1 = pwmPeriod/100;                            // CCR1 PWM duty cycle
+    TB1CCR1 = pwmPeriod/(152-NEUTRALACC);                            // CCR1 PWM duty cycle
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
     P1DIR |= BIT0;
     P1OUT |= BIT0;
