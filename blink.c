@@ -22,6 +22,7 @@
 #define IMPLEMENTATION  FIFO
 #define MAXSIZE  16
 #define START_BYTE  255
+#define NEUTRALACC  126
 
 typedef struct strRec {
     uint8_t    entry1;
@@ -173,11 +174,14 @@ int main(void){
     CSCTL1 = DCOFSEL0 + DCOFSEL1;           // DCO = 8 MHz
     CSCTL2 = SELM0 + SELM1 + SELA0 + SELA1 + SELS0 + SELS1; // MCLK = DCO, ACLK = DCO, SMCLK = DCO
 
+    P3DIR |= BIT4 + BIT5;                       // P1.6 and P1.7 output
+       P3SEL0 |= BIT4 + BIT5;                      // P1.6 and P1.7 options select
+
     int pwmPeriod = 20000;
     TB1CCR0 = pwmPeriod;                         // PWM Period
 
     TB1CCTL1 = OUTMOD_7 + CCIE;                      // CCR1 reset/set
-    TB1CCR1 = pwmPeriod/2;                            // CCR1 PWM duty cycle
+    TB1CCR1 = pwmPeriod/100;                            // CCR1 PWM duty cycle
     TB1CTL = TBSSEL_2 + MC_1 + TBCLR;         // SMCLK, up mode, clear TAR
     P1DIR |= BIT0;
     P1OUT |= BIT0;
@@ -301,7 +305,7 @@ __interrupt void Timer_B (void)
       avgXAcc = sum/MAXSIZE;
 
   }
-  LEDToggle(5);
+  LEDToggle(8);
 }
 
 
