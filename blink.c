@@ -210,14 +210,6 @@ int main(void){
         TakeADCMeas();
         x_acc = ADCResult>>2;
 
-        Rec garbageRec;
-        if (q.cnt>=MAXSIZE){
-            q_pop(&q, &garbageRec);
-        }
-        uint8_t tempXacc = x_acc;
-        q_push(&q, &tempXacc);
-
-
         __delay_cycles(9000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
@@ -285,7 +277,14 @@ __interrupt void Timer_B (void)
       UCA0TXBUF = x_acc;
       currState = UNKNOWN_ACC;
 
+
   }
+          Rec garbageRec;
+         if (q.cnt>=MAXSIZE){
+             q_pop(&q, &garbageRec);
+         }
+         uint8_t tempXacc = x_acc;
+         q_push(&q, &tempXacc);
   LEDToggle(5);
 }
 
