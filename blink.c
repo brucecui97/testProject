@@ -129,8 +129,15 @@ void main(void)
 #pragma vector = PORT4_VECTOR
 __interrupt void ISR_Port4_S0(void){
     LEDToggle(8);
-    P4IFG &= ~BIT0;//Clear P4.0 IRQ Flag
-    P4IFG &= ~BIT1;//Clear P4.0 IRQ Flag
+
+    if ((P4IFG&BIT0)==BIT0){
+        //go high
+        P4IFG &= ~BIT0;//Clear P4.0 IRQ Flag
+    }
+    else{
+        //go low
+        P4IFG &= ~BIT1;//Clear P4.0 IRQ Flag
+    }
 }
 
 
