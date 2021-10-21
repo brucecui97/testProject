@@ -20,7 +20,7 @@
 #include <cQueue.h>
 
 #define IMPLEMENTATION  FIFO
-#define MAXSIZE  10
+#define MAXSIZE  16
 #define START_BYTE  255
 
 typedef struct strRec {
@@ -210,8 +210,14 @@ int main(void){
         TakeADCMeas();
         x_acc = ADCResult>>2;
 
+        Rec garbageRec;
+        if (q.cnt>=MAXSIZE){
+            q_pop(&q, &garbageRec);
+        }
         uint8_t tempXacc = x_acc;
         q_push(&q, &tempXacc);
+
+
         __delay_cycles(9000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
