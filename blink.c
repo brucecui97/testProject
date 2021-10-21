@@ -17,6 +17,22 @@
 //***************************************************************************************
 
 #include "msp430fr5739.h"
+#include <cQueue.h>
+
+#define IMPLEMENTATION  FIFO
+#define MAXSIZE  10
+#define START_BYTE  255
+
+typedef struct strRec {
+    uint8_t    entry1;
+} Rec;
+
+Queue_t     q;  // Queue declaration
+
+void setup() {
+
+    q_init(&q, sizeof(Rec), MAXSIZE, IMPLEMENTATION, false);
+}
 // The FRAM section from 0xD000 - 0xF000 is used by all modes
 // for performing writes to FRAM
 // Do not use this section for code or data placement.
@@ -145,9 +161,11 @@ void TakeADCMeas(void)
   __no_operation();                       // For debug only
 }
 
+
 volatile unsigned int ADCResult = 0;
 int main(void){
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+    setup();
     LEDInit();
     // Configure clocks and timer
     CSCTL0 = 0xA500;                        // Write password to modify CS registers
