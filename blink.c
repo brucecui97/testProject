@@ -197,6 +197,8 @@ int main(void){
     while(1){
         //loop through x y z axis to get the values and store them in global variable
         //setup new ADC on different port
+        Rec tempRec;
+        q_peek(&q, &tempRec);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
         ADC10CTL0 = ADC10ON + ADC10SHT_5;
@@ -207,6 +209,9 @@ int main(void){
         ADC10IE |= ADC10IE0;
         TakeADCMeas();
         x_acc = ADCResult>>2;
+
+        uint8_t tempXacc = x_acc;
+        q_push(&q, &tempXacc);
         __delay_cycles(9000);
 
         ADC10CTL0 &= ~ADC10ENC;                        // Ensure ENC is clear
