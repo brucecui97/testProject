@@ -194,7 +194,10 @@ __interrupt void Timer_B (void)
 
   }
   else if (currState == Z_ACC){
+      while ((UCA0IFG & UCTXIFG)==0);
       UCA0TXBUF = z_acc;
+      while ((UCA0IFG & UCTXIFG)==0);
+      UCA0TXBUF = z_acc-3;
       currState = UNKNOWN_ACC;
 
   }
